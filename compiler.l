@@ -46,13 +46,19 @@ yyin =fopen("input.txt","r");
     yylex();
 fclose(yyin);
                 printf("\t\t\t\t\t  ----Symbol Table----\n");
-                printf("%-10s \t\t %-10s\t\t %-10s\t\t %-10s\t\t %-10s\n\n",Name,Length,Datatype,Line_num,Scope);
+                printf("%-10s \t\t %-10s\t\t %-10s\t\t %-10s\t\t %-10s\n\n",Name,Length,Datatype,Scope,Line_num);
 
 	for(int i=0;i<100;i++){
 		//printf("Index %d:",i);
 		symbol* current =hash[i];
 		while(current!=NULL){
-			printf("%-10s \t\t %-10d \t\t %-10s\t\t %-10d\t\t %-10d\n",current->name,current->value,current->datatype,current->line_number[0],current->scope);
+			printf("%-10s \t\t %-10d \t\t %-10s\t\t %-10d\t\t",current->name,current->value,current->datatype,current->scope);
+            Line* ptr=current->line_num;
+            while(ptr!=NULL){
+                printf("%d ",ptr->line);
+                ptr=ptr->next;
+            }
+            printf("\n");
 			current=current->next;
 		}
 		//printf("\n");
