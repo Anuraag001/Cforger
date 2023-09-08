@@ -36,8 +36,20 @@ ALPHA       [a-zA-Z]
 <comment>. { }
 
     /* to detect strings */
-\"(\\.|[^"])*\" { }  
-\"    {printf("\033[31mError detected: Line Number=%d String literal incomplete.\033[0m\n",l_count);}
+\"(\\.|[^"])*\"      { }  
+\"                   { printf("\033[31mError detected: Line Number=%d String literal incomplete.\033[0m\n",l_count); }
+
+    /* Operators */
+,|;                          { hash_algo(yytext,yyleng,"Delimiter",l_count); }
+"++"|"--"                    { hash_algo(yytext,yyleng,"Unary Operator",l_count); }
+"+"|"-"|"*"|"%"|"/"          { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); } 
+"&&"|"||"|"!"                { hash_algo(yytext,yyleng,"Logical Op.",l_count); }  
+"&"|"|"|"^"|"~"|"<<"|">>"    { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); }  
+"="|"-="|"+="|"*="|"/="|"%=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); } 
+"<"|">"|"<="|">="|"=="|"!="  { hash_algo(yytext,yyleng,"Relational Op.",l_count); }
+[?][^?:]*                    { printf("\033[31mError detected: Line Number=%d Missing ':' Conditional Operator\033[0m\n",l_count); }
+[?][^?:]*[:]                 { hash_algo("?:",2,"Conditional Op.",l_count); }
+
 
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float)|(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct)|(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 {ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
@@ -68,14 +80,16 @@ yyin =fopen("input.txt","r");
     yylex();
 fclose(yyin);
                 printf("\t\t\t\t\t  ----Symbol Table----\n");
-                printf("%-10s \t\t %-10s\t\t %-10s\t\t %-10s\t\t %-10s\n\n",Name,Length,Datatype,Scope,Line_num);
+                printf("%-25s | %-10s | %-25s | %-10s | %10s\n",Name,Length,Datatype,Scope,Line_num);
+                printf("------------------------------------------------------------------------------------------------\n");
 
 	for(int i=0;i<100;i++){
 		//printf("Index %d:",i);
 		symbol* current =hash[i];
 		while(current!=NULL){
-			printf("%-10s \t\t %-10d \t\t %-10s\t\t %-10d\t\t",current->name,current->value,current->datatype,current->scope);
+			printf("%-25s | %-10d | %-25s | %-11d",current->name,current->value,current->datatype,current->scope);
             Line* ptr=current->line_num;
+            printf("| ");
             while(ptr!=NULL){
                 printf("%d ",ptr->line);
                 ptr=ptr->next;
