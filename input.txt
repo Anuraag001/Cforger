@@ -2,6 +2,7 @@
 #include string.h>
 define re 223
 #define MAX 5
+// this is a single line comment
 int main()
 {
 	int 5str, abc, 88c89;

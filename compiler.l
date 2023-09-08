@@ -30,6 +30,7 @@ ALPHA       [a-zA-Z]
 ("#include"|"include")[ ]*\"(.)*   {printf("\033[31mLine %d: Incorrect preprocessor defination: %s\n\033[0m",l_count,yytext);}
 "#define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)* {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
 "define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)*  {printf("\033[31mLine %d: Incorrect preprocessor defination: %s\n\033[0m",l_count,yytext);}
+\/\/.*  {printf("\033[32mSingle line Comment present in %d line\033[0m\n",l_count);}
     /* to detect multiline comments */
 "/*" { BEGIN(comment); in_comment = true; comment_line = l_count; }
 <comment>"*/" { BEGIN(INITIAL); if(in_comment) in_comment = false; }
