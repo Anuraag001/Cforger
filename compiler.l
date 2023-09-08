@@ -6,6 +6,8 @@
     void Print(char *);
     char type[20];
     int l_count=1;
+
+    bool  in_comment = false;int comment_line ;
     
 %}
 
@@ -16,7 +18,14 @@ LETTER      [_a-zA-Z]
 ID          {LETTER}({LETTER}|{DIGIT})*
 NUMBER      {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 SPECIAL     [&@$#]+
+
+%x comment
+
 %%
+"/*" { BEGIN(comment); in_comment = true; comment_line = l_count; }
+<comment>"*/" { BEGIN(INITIAL); if(in_comment) in_comment = false; }
+<comment>. { }
+
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float)|(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct)|(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 {ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
 #include    {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
@@ -63,6 +72,7 @@ fclose(yyin);
 		}
 		//printf("\n");
 	}
+     if ( in_comment != 0) printf("Line %d: Multiline comment: missing \"*/\" .", comment_line);
     return 0;
 }
 
