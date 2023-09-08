@@ -37,7 +37,7 @@ ALPHA       [a-zA-Z]
 <comment>. { }
 
     /* to detect strings */
-\"(\\.|[^"])*\"      { }  
+\"(\\.|[^"])*\"      { hash_algo(yytext,yyleng,"String literal",l_count); }  
 \"                   { printf("\033[31mError detected: Line Number=%d String literal incomplete.\033[0m\n",l_count); }
 
     /* Operators */
@@ -51,7 +51,6 @@ ALPHA       [a-zA-Z]
 [?][^?:]*                    { printf("\033[31mError detected: Line Number=%d Missing ':' Conditional Operator\033[0m\n",l_count); }
 [?][^?:]*[:]                 { hash_algo("?:",2,"Conditional Op.",l_count); }
 
-
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float)|(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct)|(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 {ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
@@ -59,6 +58,8 @@ ALPHA       [a-zA-Z]
 {DIGIT}({LETTER}|{DIGIT}|{SPECIAL})* {printf("\033[31mError detected: Line Number=%d identifier cannot start with digit i.e %s\033[0m\n",l_count,yytext);}
 {SPECIAL}({LETTER}|{DIGIT})* {printf("\033[31mError detected: Line Number=%d identifier cannot start with special character i.e %s\033[0m\n",l_count,yytext);}
 {LETTER}({LETTER}|{DIGIT})*{SPECIAL}({LETTER}|{DIGIT})* {printf("\033[31mError detected: Line Number=%d identifier cannot have a special character in between  i.e %s\033[0m\n",l_count,yytext);}
+
+
 [ \t]     ;
 .           { }
 \n        {l_count++ ;}
