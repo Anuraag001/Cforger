@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include string.h>
 
+#define MAX 5
 int main()
 {
 	int 5str, abc, 88c89;
@@ -10,7 +11,7 @@ int main()
 
 	for ( ; ; ){
 		statement 1;
-		string "Detroit";
+		string "Detroit;
 	}
 
 	/* this
