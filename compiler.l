@@ -37,7 +37,7 @@ ALPHA       [a-zA-Z]
 <comment>. { }
 
     /* to detect strings */
-\"(\\.|[^"])*\"      { hash_algo(yytext,yyleng,"String literal",l_count); }  
+\"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
 \"                   { printf("\033[31mError detected: Line Number=%d String literal incomplete.\033[0m\n",l_count); }
 
     /* Operators */
