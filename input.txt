@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include string.h>
-
+define re 223
 #define MAX 5
 int main()
 {

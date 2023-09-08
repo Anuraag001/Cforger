@@ -18,10 +18,18 @@ LETTER      [_a-zA-Z]
 ID          {LETTER}({LETTER}|{DIGIT})*
 NUMBER      {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 SPECIAL     [&@$#]+
-
+ALPHA       [a-zA-Z]
 %x comment
 
 %%
+"#include"[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h>" {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
+("#include"|"include")[ ]*{ALPHA}({ALPHA}|{DIGIT})*".h>" {printf("\033[31mLine %d: Incorrect preprocessor defination: %s\n\033[0m",l_count,yytext);}
+("#include"|"include")[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h" {printf("\033[31mLine %d: Incorrect preprocessor defination: %s\n\033[0m",l_count,yytext);}
+"#include"[ ]*\"(.)*\" {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
+("#include"|"include")[ ]*(.)*\"    {printf("\033[31mLine %d: Incorrect preprocessor defination: %s\n\033[0m",l_count,yytext);}
+("#include"|"include")[ ]*\"(.)*   {printf("\033[31mLine %d: Incorrect preprocessor defination: %s\n\033[0m",l_count,yytext);}
+"#define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)* {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
+"define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)*  {printf("\033[31mLine %d: Incorrect preprocessor defination: %s\n\033[0m",l_count,yytext);}
     /* to detect multiline comments */
 "/*" { BEGIN(comment); in_comment = true; comment_line = l_count; }
 <comment>"*/" { BEGIN(INITIAL); if(in_comment) in_comment = false; }
