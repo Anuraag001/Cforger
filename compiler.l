@@ -11,6 +11,8 @@
     char temp[100];
     char stoi[100];
     bool  in_comment = false;int comment_line ;
+    int brack_count=0, parenth_count=0, curli_count=0;
+    int brack_line=0, parenth_line=0, curli_line=0;
     
 %}
 
@@ -80,6 +82,14 @@ ALPHA       [a-zA-Z]
 <comment>\n { /* Do nothing, newline characters are ignored inside comments */ }
 <comment>. { }
 
+
+\(  { parenth_count++; if(parenth_count != 0) parenth_line = l_count;}
+\{  { curli_count++; if(curli_count != 0) curli_line = l_count;}
+\[  { brack_count++; if(brack_count != 0) brack_line = l_count;}
+\)  { parenth_count--; if(parenth_count != 0) parenth_line = l_count;}
+\}  { curli_count--; if(curli_count != 0) curli_line = l_count;}
+\]  { brack_count--; if(brack_count != 0) brack_line = l_count;}
+
     /* to detect strings */
 \"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
 \"                   { 
@@ -116,6 +126,12 @@ ALPHA       [a-zA-Z]
                               head=push_error(temp,head); 
                             }
 [?][^?:]*[:]                 { hash_algo("?:",2,"Conditional Op.",l_count); }
+
+
+"0"|[0-9]{DIGIT}*                     { hash_algo(yytext,yyleng,"INTEGER",l_count); }           
+"0"|{DIGIT}*"."{DIGIT}+         { hash_algo(yytext,yyleng,"FLOAT",l_count); }
+
+
 
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float)|(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct)|(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 {ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
@@ -195,7 +211,9 @@ fclose(yyin);
         p=p->next;
     }
     if ( in_comment != 0) printf("\033[31mLine %d: Multiline comment: missing \"*/\" .\n\033[0m", comment_line);
+    if ( brack_count != 0) printf("\033[31mLine %d: Incomplete brackets .\n\033[0m", brack_line);
+    if ( curli_count != 0) printf("\033[31mLine %d: Incomplete curly braces .\n\033[0m", curli_line);
+    if ( parenth_count != 0) printf("\033[31mLine %d: Incomplete paranthesis.\n\033[0m", parenth_line);
+
     return 0;
 }
-
-
