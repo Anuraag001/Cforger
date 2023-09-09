@@ -50,7 +50,13 @@ ALPHA       [a-zA-Z]
 "<"|">"|"<="|">="|"=="|"!="  { hash_algo(yytext,yyleng,"Relational Op.",l_count); }
 [?][^?:]*                    { printf("\033[31mError detected: Line Number=%d Missing ':' Conditional Operator\033[0m\n",l_count); }
 [?][^?:]*[:]                 { hash_algo("?:",2,"Conditional Op.",l_count); }
-
+    /* brackets */
+"{"			     { hash_algo(yytext,yyleng,"R_Brace",l_count); }
+"}"			     { hash_algo(yytext,yyleng,"L_Brace",l_count); }
+"("			     { hash_algo(yytext,yyleng,"R_Parenthesis",l_count); }
+")"			     { hash_algo(yytext,yyleng,"L_Parenthesis",l_count); }
+"["			     { hash_algo(yytext,yyleng,"R_Bracket",l_count); }
+"]"			     { hash_algo(yytext,yyleng,"L_Bracket",l_count); }
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float)|(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct)|(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 {ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
