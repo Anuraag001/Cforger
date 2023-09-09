@@ -40,6 +40,10 @@ ALPHA       [a-zA-Z]
 \"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
 \"                   { printf("\033[31mError detected: Line Number=%d String literal incomplete.\033[0m\n",l_count); }
 
+    /* characters , some escape sequence might go unnoticed */
+'[^'\\]'|'\\[^'~!@#$%^&*_+-+=]'          { hash_algo(yytext,yyleng,"Character",l_count); }  
+'[^']{2,}'                               { printf("\033[31mError detected: Line Number=%d Character overflow.\033[0m\n",l_count);}
+
     /* Operators */
 ,|;                          { hash_algo(yytext,yyleng,"Delimiter",l_count); }
 "++"|"--"                    { hash_algo(yytext,yyleng,"Unary Operator",l_count); }
