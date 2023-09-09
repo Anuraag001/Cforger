@@ -83,8 +83,8 @@ ALPHA       [a-zA-Z]
     /* to detect strings */
 \"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
 \"                   { 
-                        strcpy(temp,"Error detected: Line Number=");
-                        sprintf(stoi,"%d",l_count);
+                        strcpy(temp,"Line ");
+                        sprintf(stoi,"%d:",l_count);
                         strcat(temp,stoi);
                         strcat(temp," String literal incomplete.");
                         head=push_error(temp,head);
@@ -93,8 +93,8 @@ ALPHA       [a-zA-Z]
     /* characters , some escape sequence might go unnoticed */
 '[^'\\]'|'\\[^'~!@#$%^&*_+-+=]'          { hash_algo(yytext,yyleng,"Character",l_count); }  
 '[^']{2,}'                               {
-                                            strcpy(temp,"Error detected: Line Number=");
-                                            sprintf(stoi,"%d",l_count);
+                                            strcpy(temp,"Line ");
+                                            sprintf(stoi,"%d:",l_count);
                                             strcat(temp,stoi);
                                             strcat(temp," Character overflow.");
                                             head=push_error(temp,head); 
@@ -109,8 +109,8 @@ ALPHA       [a-zA-Z]
 "="|"-="|"+="|"*="|"/="|"%=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); } 
 "<"|">"|"<="|">="|"=="|"!="  { hash_algo(yytext,yyleng,"Relational Op.",l_count); }
 [?][^?:]*                    { 
-                              strcpy(temp,"Error detected: Line Number=");
-                              sprintf(stoi,"%d",l_count);
+                              strcpy(temp,"Line ");
+                              sprintf(stoi,"%d:",l_count);
                               strcat(temp,stoi);
                               strcat(temp," Missing ':' Conditional Operator");
                               head=push_error(temp,head); 
@@ -122,24 +122,24 @@ ALPHA       [a-zA-Z]
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
 {NUMBER}    { hash_algo(yytext,yyleng,"number",l_count);}
 {DIGIT}({LETTER}|{DIGIT}|{SPECIAL})* {
-                                    strcpy(temp,"Error detected: Line Number=");
-                                    sprintf(stoi,"%d",l_count);
+                                    strcpy(temp,"Line ");
+                                    sprintf(stoi,"%d:",l_count);
                                     strcat(temp,stoi);
                                     strcat(temp," identifier cannot start with digit i.e ");
                                     strcat(temp,yytext);
                                     head=push_error(temp,head);
                                     }
 {SPECIAL}({LETTER}|{DIGIT})* {
-                            strcpy(temp,"Error detected: Line Number=");
-                            sprintf(stoi,"%d",l_count);
+                            strcpy(temp,"Line ");
+                            sprintf(stoi,"%d:",l_count);
                             strcat(temp,stoi);
                             strcat(temp," identifier cannot start with special character i.e ");
                             strcat(temp,yytext);
                             head=push_error(temp,head);
                             }
 {LETTER}({LETTER}|{DIGIT})*{SPECIAL}({LETTER}|{DIGIT})* {
-                                                        strcpy(temp,"Error detected: Line Number=");
-                                                        sprintf(stoi,"%d",l_count);
+                                                        strcpy(temp,"Line ");
+                                                        sprintf(stoi,"%d:",l_count);
                                                         strcat(temp,stoi);
                                                         strcat(temp," identifier cannot have a special character in between i.e");
                                                         strcat(temp,yytext);
