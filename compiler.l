@@ -83,12 +83,13 @@ ALPHA       [a-zA-Z]
 <comment>. { }
 
 
-\(  { parenth_count++; if(parenth_count != 0) parenth_line = l_count;}
-\{  { curli_count++; if(curli_count != 0) curli_line = l_count;}
-\[  { brack_count++; if(brack_count != 0) brack_line = l_count;}
-\)  { parenth_count--; if(parenth_count != 0) parenth_line = l_count;}
-\}  { curli_count--; if(curli_count != 0) curli_line = l_count;}
-\]  { brack_count--; if(brack_count != 0) brack_line = l_count;}
+
+\(  { hash_algo(yytext,yyleng,"R_Parenthesis",l_count); parenth_count++; if(parenth_count != 0) parenth_line = l_count;}
+\{  { hash_algo(yytext,yyleng,"R_Brace",l_count); curli_count++; if(curli_count != 0) curli_line = l_count;}
+\[  { hash_algo(yytext,yyleng,"R_Bracket",l_count); brack_count++; if(brack_count != 0) brack_line = l_count;}
+\)  { hash_algo(yytext,yyleng,"L_Parenthesis",l_count);parenth_count--; if(parenth_count != 0) parenth_line = l_count;}
+\}  { hash_algo(yytext,yyleng,"L_Brace",l_count); curli_count--; if(curli_count != 0) curli_line = l_count;}
+\]  { hash_algo(yytext,yyleng,"L_Bracket",l_count); brack_count--; if(brack_count != 0) brack_line = l_count;}
 
     /* to detect strings */
 \"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
