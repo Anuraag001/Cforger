@@ -134,7 +134,9 @@ ALPHA       [a-zA-Z]
 
 
 
-(auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float)|(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct)|(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
+(auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
+(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
+(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 {ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
 {NUMBER}    { hash_algo(yytext,yyleng,"number",l_count);}
@@ -176,7 +178,7 @@ int main(int argc, char *argv[]) {
 initialize();
 char Name[]="Name";
 char Length[]="Length";
-char Datatype[]="Datatype";
+char Token[]="Token";
 char Line_num[]="Line Number";
 char Scope[]="Scope";
 head=(Error*) malloc(sizeof(Error));
@@ -187,14 +189,14 @@ yyin =fopen(argv[1],"r");
     yylex();
 fclose(yyin);
                 printf("\t\t\t\t\t  ----Symbol Table----\n");
-                printf("%-25s | %-10s | %-25s | %-10s | %10s\n",Name,Length,Datatype,Scope,Line_num);
+                printf("%-25s | %-10s | %-25s | %-10s | %10s\n",Name,Length,Token,Scope,Line_num);
                 printf("------------------------------------------------------------------------------------------------\n");
 
 	for(int i=0;i<100;i++){
 		//printf("Index %d:",i);
 		symbol* current =hash[i];
 		while(current!=NULL){
-			printf("%-25s | %-10d | %-25s | %-11d",current->name,current->value,current->datatype,current->scope);
+			printf("%-25s | %-10d | %-25s | %-11d",current->name,current->length,current->token,current->scope);
             Line* ptr=current->line_num;
             printf("| ");
             while(ptr!=NULL){
