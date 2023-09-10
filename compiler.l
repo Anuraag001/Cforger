@@ -166,7 +166,7 @@ head=(Error*) malloc(sizeof(Error));
 head=NULL;
 
   extern FILE* yyin;
-yyin =fopen("input.txt","r");
+yyin =fopen(argv[1],"r");
     yylex();
 fclose(yyin);
                 printf("\t\t\t\t\t  ----Symbol Table----\n");
