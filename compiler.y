@@ -1,21 +1,20 @@
 %{
     #include <stdio.h>
-    #include <stdlib.h>
-    #include "sym_table.c"
 %}
 
 %token AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INT LONG REGISTER RETURN SHORT SIGNED SIZEOF STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
-%token ID NUMBER SPECIAL _CHAR _STRING PRINTF SCANF RETURN MAIN SPACE
+%token ID NUMBER SPECIAL _CHAR _STRING PRINTF SCANF MAIN SPACE WHITESPACE
+%token LPARA RPARA LCURLY RCURLY LBRACK RBRACK
 %token string_constant character_constant INCREMENT DECREMENT AND_AND OR_OR NOT LEFT_SHIFT RIGHT_SHIFT SUBTRACT_EQUAL ADD_EQUAL MOD_EQUAL MULTIPLE_EQUAL DIVIDE_EQUAL GREATER LESSER LESS_EQUAL GREAT_EQUAL EQUAL_EQUAL NOT_EQUAL _INTEGER _FLOAT
 %%
-E: '+' {printf("add");}
- ;
+start: stmt MAIN LPARA stmt RPARA { printf("CORRECT syntax of main."); return 0; }
+     ;
+
+stmt: 
+    | ID stmt
+    ;
 %%
 int yyerror(char *s) {
     fprintf(stderr, "%s\n", s);
 }
 
-int main(){
-    yyparse();
-    return 0;
-}

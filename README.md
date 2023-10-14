@@ -1,17 +1,15 @@
 # Cforger
 
-This is a lexical analyzer for C language.
+This is a lexical/syntax analyzer for C language.
 
-It prints the symbol table and provides info about Lexical errors if present.
+It prints the symbol table and provides info about Lexical/syntax errors if present.
 
 Step 1: Modify the *input.txt* file and put your code whose analysis you want.
 
 Step 2: To run , use the following commands
 
-`flex compiler.l`
+`./run compiler`
 
-`gcc lex.yy.c -o compile `
+if you are unable to use *run.sh* on Linux try:
 
-`./compile `
-
-In case if you want to compile a file other than *input.txt* modify the code in *compiler.l*
+`sudo chmod +x run.sh`
