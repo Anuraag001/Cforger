@@ -32,13 +32,11 @@ ALPHA       [a-zA-Z]
 {ID} {return ID;}
 {NUMBER} {return NUMBER;}
 {SPECIAL} {return SPECIAL;}
-{ALPHA} {return CHAR;}
-"\""({NUMBER}|{ID}|{SPECIAL})*"\"" {return STRING;}
+{ALPHA} {return _CHAR;}
+"\""({NUMBER}|{ID}|{SPECIAL})*"\"" {return _STRING;}
 "printf" {return PRINTF;}
 "scanf" {return SCANF;}
-"return" {return RETURN;}
 "main" {return MAIN;}
-"struct" {return STRUCT;}
 " " {return SPACE;}
 "#include"[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h>" {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
 ("#include"|"include")[ ]*{ALPHA}({ALPHA}|{DIGIT})*".h>" {
@@ -124,7 +122,7 @@ ALPHA       [a-zA-Z]
                                             head=push_error(temp,head); 
                                          }
 
-    /* Operators */
+    /* Operators 
 ,|;                          { hash_algo(yytext,yyleng,"Delimiter",l_count); }
 "++"|"--"                    { hash_algo(yytext,yyleng,"Unary Operator",l_count); }
 "+"|"-"|"*"|"%"|"/"          { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); } 
@@ -132,6 +130,7 @@ ALPHA       [a-zA-Z]
 "&"|"|"|"^"|"~"|"<<"|">>"    { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); }  
 "="|"-="|"+="|"*="|"/="|"%=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); } 
 "<"|">"|"<="|">="|"=="|"!="  { hash_algo(yytext,yyleng,"Relational Op.",l_count); }
+    */
 [?][^?:]*                    { 
                               strcpy(temp,"Line ");
                               sprintf(stoi,"%d:",l_count);
@@ -145,11 +144,44 @@ ALPHA       [a-zA-Z]
 "0"|[0-9]{DIGIT}*                     { hash_algo(yytext,yyleng,"INTEGER",l_count); }           
 "0"|{DIGIT}*"."{DIGIT}+         { hash_algo(yytext,yyleng,"FLOAT",l_count); }
 
-
-
+    /*
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 (for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 (switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
+    */
+auto { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return AUTO; }
+break { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return BREAK; }
+case { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return CASE; }
+char { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return CHAR; }
+const { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return CONST; }
+continue { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return CONTINUE; }
+default { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return DEFAULT; }
+do { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return DO; }
+double { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return DOUBLE; }
+else { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return ELSE; }
+enum { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return ENUM; }
+extern { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return EXTERN; }
+float { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return FLOAT; }
+for { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return FOR; }
+goto { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return GOTO; }
+if { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return IF; }
+int { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return INT; }
+long { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return LONG; }
+register { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return REGISTER; }
+return { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return RETURN; }
+short { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return SHORT; }
+signed { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return SIGNED; }
+sizeof { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return SIZEOF; }
+static { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return STATIC; }
+struct { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return STRUCT; }
+switch { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return SWITCH; }
+typedef { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return TYPEDEF; }
+union { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return UNION; }
+unsigned { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return UNSIGNED; }
+void { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return VOID; }
+volatile { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return VOLATILE; }
+while { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count); return WHILE; }
+
 {ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
 {NUMBER}    { hash_algo(yytext,yyleng,"number",l_count);}
