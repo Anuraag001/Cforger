@@ -94,16 +94,15 @@ ALPHA       [a-zA-Z]
 <comment>. { }
 
 
-
-\(  { hash_algo(yytext,yyleng,"R_Parenthesis",l_count); parenth_count++; if(parenth_count != 0) parenth_line = l_count;}
-\{  { hash_algo(yytext,yyleng,"R_Brace",l_count); curli_count++; if(curli_count != 0) curli_line = l_count;}
-\[  { hash_algo(yytext,yyleng,"R_Bracket",l_count); brack_count++; if(brack_count != 0) brack_line = l_count;}
-\)  { hash_algo(yytext,yyleng,"L_Parenthesis",l_count);parenth_count--; if(parenth_count != 0) parenth_line = l_count;}
-\}  { hash_algo(yytext,yyleng,"L_Brace",l_count); curli_count--; if(curli_count != 0) curli_line = l_count;}
-\]  { hash_algo(yytext,yyleng,"L_Bracket",l_count); brack_count--; if(brack_count != 0) brack_line = l_count;}
+\(  { hash_algo(yytext,yyleng,"R_Parenthesis",l_count); parenth_count++; if(parenth_count != 0) parenth_line = l_count; return *yytext;}
+\{  { hash_algo(yytext,yyleng,"R_Brace",l_count); curli_count++; if(curli_count != 0) curli_line = l_count;return *yytext;}
+\[  { hash_algo(yytext,yyleng,"R_Bracket",l_count); brack_count++; if(brack_count != 0) brack_line = l_count;return *yytext;}
+\)  { hash_algo(yytext,yyleng,"L_Parenthesis",l_count);parenth_count--; if(parenth_count != 0) parenth_line = l_count;return *yytext;}
+\}  { hash_algo(yytext,yyleng,"L_Brace",l_count); curli_count--; if(curli_count != 0) curli_line = l_count;return *yytext;}
+\]  { hash_algo(yytext,yyleng,"L_Bracket",l_count); brack_count--; if(brack_count != 0) brack_line = l_count;return *yytext;}
 
     /* to detect strings */
-\"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
+\"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); return string_constant;}  
 \"                   { 
                         strcpy(temp,"Line ");
                         sprintf(stoi,"%d:",l_count);
@@ -113,7 +112,7 @@ ALPHA       [a-zA-Z]
                      }
 
     /* characters , some escape sequence might go unnoticed */
-'[^'\\]'|'\\[^'~!@#$%^&*_+-+=]'          { hash_algo(yytext,yyleng,"Character",l_count); }  
+'[^'\\]'|'\\[^'~!@#$%^&*_+-+=]'          { hash_algo(yytext,yyleng,"Character",l_count); return character_constant;}  
 '[^']{2,}'                               {
                                             strcpy(temp,"Line ");
                                             sprintf(stoi,"%d:",l_count);
@@ -122,15 +121,37 @@ ALPHA       [a-zA-Z]
                                             head=push_error(temp,head); 
                                          }
 
-    /* Operators 
-,|;                          { hash_algo(yytext,yyleng,"Delimiter",l_count); }
-"++"|"--"                    { hash_algo(yytext,yyleng,"Unary Operator",l_count); }
-"+"|"-"|"*"|"%"|"/"          { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); } 
-"&&"|"||"|"!"                { hash_algo(yytext,yyleng,"Logical Op.",l_count); }  
-"&"|"|"|"^"|"~"|"<<"|">>"    { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); }  
-"="|"-="|"+="|"*="|"/="|"%=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); } 
-"<"|">"|"<="|">="|"=="|"!="  { hash_algo(yytext,yyleng,"Relational Op.",l_count); }
-    */
+    /* Operators */
+,                          { hash_algo(yytext,yyleng,"Delimiter",l_count); return *yytext;}
+;                          { hash_algo(yytext,yyleng,"Delimiter",l_count); return *yytext;}
+"++"                    { hash_algo(yytext,yyleng,"Unary Operator",l_count); return INCREMENT;}
+"--"                    { hash_algo(yytext,yyleng,"Unary Operator",l_count); return DECREMENT;}
+"+"         { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); return *yytext;} 
+"-"          { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); return *yytext;} 
+"*"         { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); return *yytext;} 
+"%"         { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); return *yytext;} 
+"/"          { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); return *yytext;} 
+"&&"|               { hash_algo(yytext,yyleng,"Logical Op.",l_count);return AND_AND; } 
+"||"               { hash_algo(yytext,yyleng,"Logical Op.",l_count); return OR_OR;} 
+"!"                { hash_algo(yytext,yyleng,"Logical Op.",l_count); return NOT;}  
+"&"    { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); return *yytext;}  
+"|"   { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); return *yytext;}  
+"^"   { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); return *yytext;}  
+"~"  { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); return *yytext;}  
+"<<"   { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); return LEFT_SHIFT;}  
+">>"    { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); return RIGHT_SHIFT; }  
+"=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); return *yytext;} 
+"-=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); return SUBTRACT_EQUAL;} 
+"+=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); return ADD_EQUAL;} 
+"*=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); return MULTIPLE_EQUAL;} 
+"/=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); return DIVIDE_EQUAL;} 
+"%=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count);return MOD_EQUAL; } 
+"<"  { hash_algo(yytext,yyleng,"Relational Op.",l_count); return GREATER;}
+">" { hash_algo(yytext,yyleng,"Relational Op.",l_count); return LESSER;}
+"<=" { hash_algo(yytext,yyleng,"Relational Op.",l_count); return LESS_EQUAL;}
+">="  { hash_algo(yytext,yyleng,"Relational Op.",l_count); return GREAT_EQUAL;}
+"==" { hash_algo(yytext,yyleng,"Relational Op.",l_count); return EQUAL_EQUAL;}
+"!="  { hash_algo(yytext,yyleng,"Relational Op.",l_count);return NOT_EQUAL; }
 [?][^?:]*                    { 
                               strcpy(temp,"Line ");
                               sprintf(stoi,"%d:",l_count);
@@ -141,8 +162,8 @@ ALPHA       [a-zA-Z]
 [?][^?:]*[:]                 { hash_algo("?:",2,"Conditional Op.",l_count); }
 
 
-"0"|[0-9]{DIGIT}*                     { hash_algo(yytext,yyleng,"INTEGER",l_count); }           
-"0"|{DIGIT}*"."{DIGIT}+         { hash_algo(yytext,yyleng,"FLOAT",l_count); }
+"0"|[0-9]{DIGIT}*                     { hash_algo(yytext,yyleng,"INTEGER",l_count); return _INTEGER;}           
+"0"|{DIGIT}*"."{DIGIT}+         { hash_algo(yytext,yyleng,"FLOAT",l_count); return _FLOAT;}
 
     /*
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
