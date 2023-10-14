@@ -1,2 +1,7 @@
 *.exe
 lex.yy.c
+y.tab.c
+y.tab.h
+compiler.tab.c
+compiler.tab.h
+*.out

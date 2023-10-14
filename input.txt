@@ -1,26 +1,2 @@
-#include <stdio.h>
-#include string.h>
-define re 223
-#define MAX 5
-// this is a single line comment
-int main()
-{
-	int 5str, abc, 88c89;
-	56.5,	56^6, 56&6, in@t, 344$;
 
-	// single line comment 
-
-	for ( ; ; ){
-		statement 1;
-		string "Detroit;
-	}
-
-	/* this
-		is 
-		multiline comment 
-	*
-	char c = 'C';
-	char ch = 'adfs';
-
-	
-}
+/* hrgmg; */ */ 

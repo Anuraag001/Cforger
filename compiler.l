@@ -4,6 +4,8 @@
     #include <string.h>
     #include "sym_table.c"
     #include "errors.c"
+    #include "compiler.tab.h"
+    
     void Print(char *);
     char type[20];
     int l_count=1;
