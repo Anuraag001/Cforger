@@ -29,6 +29,17 @@ ALPHA       [a-zA-Z]
 %x comment
 
 %%
+{ID} {return ID;}
+{NUMBER} {return NUMBER;}
+{SPECIAL} {return SPECIAL;}
+{ALPHA} {return CHAR;}
+"\""({NUMBER}|{ID}|{SPECIAL})*"\"" {return STRING;}
+"printf" {return PRINTF;}
+"scanf" {return SCANF;}
+"return" {return RETURN;}
+"main" {return MAIN;}
+"struct" {return STRUCT;}
+" " {return SPACE;}
 "#include"[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h>" {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
 ("#include"|"include")[ ]*{ALPHA}({ALPHA}|{DIGIT})*".h>" {
                                                             strcpy(temp,"Line ");

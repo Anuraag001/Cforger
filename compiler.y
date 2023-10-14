@@ -4,6 +4,8 @@
     #include "sym_table.c"
 %}
 
+%token ID NUMBER SPECIAL CHAR STRING PRINTF SCANF RETURN MAIN STRUCT SPACE
+
 %%
 E: '+' {printf("add");}
  ;
