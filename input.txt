@@ -1,1 +1,1 @@
-intmain(hi) 
+int main

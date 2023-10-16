@@ -3,17 +3,16 @@
     #include "sym_table.h"
     #include "errors.h"
     #include "compiler.tab.h"
-    
-    void Print(char *);
-    char type[20];
+    bool  in_comment = false;
+    int comment_line ;
+    int brack_count=0, parenth_count=0, curli_count=0;
+    int brack_line=0, parenth_line=0, curli_line=0;
     int l_count=1;
+    char type[20];
+    
     Error* head;
     char temp[100];
     char stoi[100];
-    bool  in_comment = false;int comment_line ;
-    int brack_count=0, parenth_count=0, curli_count=0;
-    int brack_line=0, parenth_line=0, curli_line=0;
-    
 %}
 
 %option noyywrap
@@ -203,7 +202,18 @@ while       { strcpy(type,"keyword"); hash_algo(yytext,yyleng,type,l_count); ret
 
 
 
-{ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
+{ID}        { if(yyleng<=32){
+                    strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);
+                }
+                else{
+                    strcpy(temp,"Line ");
+                    sprintf(stoi,"%d:",l_count);
+                    strcat(temp,stoi);
+                    strcat(temp," identifier length cannot be greater than 32 i.e ");
+                    strcat(temp,yytext);
+                    head=push_error(temp,head);
+                }
+           }
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
 {NUMBER}    { hash_algo(yytext,yyleng,"number",l_count);}
 {DIGIT}({LETTER}|{DIGIT}|{SPECIAL})* {
@@ -233,56 +243,7 @@ while       { strcpy(type,"keyword"); hash_algo(yytext,yyleng,type,l_count); ret
 
 
 [ \t]     return WHITESPACE;
-.           { }
-\n        {l_count++ ;}
+.           { return yytext[0];}
+\n        {l_count++ ;return 0;}
 %%
 
-
-
-
-int main(int argc, char *argv[]) {
-initialize();
-char Name[]="Name";
-char Length[]="Length";
-char Token[]="Token";
-char Line_num[]="Line Number";
-char Scope[]="Scope";
-head=(Error*) malloc(sizeof(Error));
-head=NULL;
-
-  extern FILE* yyin;
-yyin =fopen(argv[1],"r");
-    yylex();
-fclose(yyin);
-                printf("\t\t\t\t\t  ----Symbol Table----\n");
-                printf("%-25s | %-10s | %-25s | %-10s | %10s\n",Name,Length,Token,Scope,Line_num);
-                printf("------------------------------------------------------------------------------------------------\n");
-
-	for(int i=0;i<100;i++){
-		//printf("Index %d:",i);
-		symbol* current =hash[i];
-		while(current!=NULL){
-			printf("%-25s | %-10d | %-25s | %-11d",current->name,current->length,current->token,current->scope);
-            Line* ptr=current->line_num;
-            printf("| ");
-            while(ptr!=NULL){
-                printf("%d ",ptr->line);
-                ptr=ptr->next;
-            }
-            printf("\n");
-			current=current->next;
-		}
-		//printf("\n");
-	}
-    Error* p=head;
-    while(p!=NULL){
-        printf("\033[31m%s\n\033[0m",p->str);
-        p=p->next;
-    }
-    if ( in_comment != 0) printf("\033[31mLine %d: Multiline comment: missing \"*/\" .\n\033[0m", comment_line);
-    if ( brack_count != 0) printf("\033[31mLine %d: Incomplete brackets .\n\033[0m", brack_line);
-    if ( curli_count != 0) printf("\033[31mLine %d: Incomplete curly braces .\n\033[0m", curli_line);
-    if ( parenth_count != 0) printf("\033[31mLine %d: Incomplete paranthesis.\n\033[0m", parenth_line);
-    yyparse();
-    return 0;
-}

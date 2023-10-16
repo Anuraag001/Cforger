@@ -10,7 +10,7 @@ typedef struct Line{
 } Line;
 
 typedef struct symbol {
-    char name[100];
+    char name[32];
     char token[100];
     int length;
     Line* line_num;
