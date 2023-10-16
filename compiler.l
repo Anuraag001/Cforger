@@ -215,6 +215,7 @@ while       { strcpy(type,"keyword"); hash_algo(yytext,yyleng,type,l_count); ret
                 }
            }
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
+#endif  {hash_algo(yytext,yyleng,"Preprocessor",l_count); return ENDIF;}
 {NUMBER}    { hash_algo(yytext,yyleng,"number",l_count);}
 {DIGIT}({LETTER}|{DIGIT}|{SPECIAL})* {
                                     strcpy(temp,"Line ");
