@@ -207,12 +207,12 @@
 	}
 
 	void printSymbolTable(){
-        printf("\033[34m\t\t%10s | %18s | %10s | %10s | %10s\033[0m\n","SYMBOL", "CLASS", "TYPE","VALUE","LINE NO");
-		printf("\033[34m\t\t--------------------------------------------------------------------------\033[0m\n");
+        printf("\033[34m\t\t%10s | %18s | %10s | %10s | %10s | %10s | %10s\033[0m\n","SYMBOL", "CLASS", "TYPE","VALUE","DIMENSIONS","PARAMENTERS","LINE NO");
+		printf("\033[34m\t\t-----------------------------------------------------------------------------------------------------\033[0m\n");
 		for(int i = 0; i < 1000; ++i){
 			if(ST[i].exist == 0)
 				continue;
-			printf("\033[32m\t\t%10s | %18s | %10s | %10s | %d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value, ST[i].line_number);
+			printf("\033[32m\t\t%10s | %18s | %10s | %10s | %10s | %10s | %10d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters,ST[i].line_number);
 		}
 	}
 	char current_identifier[20];
@@ -240,6 +240,8 @@ IN "include"
 
 \n 	{yylineno++;}
 "#include"[ ]*"<"{alpha}({alphanum})*".h>"                                  	{ }
+"#include"																		{return INCLUDE;}
+"#define"																		{return DEFINE;}
 "#define"[ ]+(_|{alpha})({alphanum})*[ ]*(.)+                                   { } 
 "//".*  																		{ }
 
@@ -336,6 +338,7 @@ IN "include"
 "<="										 {return LESS_EQUAL;}
 "=="										 {return EQUAL;}
 "!="										 {return NOT_EQUAL;}
+"?"											 {return *yytext;}
 .											 { flag = 1;
 											   if(yytext[0] == '#')
 													printf("Line No. %d PREPROCESSOR ERROR - %s\n", yylineno, yytext);

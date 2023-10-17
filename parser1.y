@@ -22,7 +22,7 @@
 
 %nonassoc IF
 %token INT CHAR FLOAT DOUBLE LONG SHORT SIGNED UNSIGNED STRUCT
-%token RETURN MAIN
+%token RETURN MAIN INCLUDE DEFINE
 %token VOID
 %token WHILE FOR DO 
 %token BREAK CONTINUE GOTO
@@ -67,7 +67,14 @@ declarations
 declaration
 			: variable_dec 
 			| function_dec
-			| structure_dec;
+			| structure_dec
+			| file_dec
+			;
+	
+file_dec
+        : INCLUDE '<' identifier ".h" '>'
+		;
+
 
 structure_dec
 			: STRUCT identifier { insert_type(); } '{' structure_content  '}' ';';
@@ -326,18 +333,18 @@ int main()
 
 	if(true)
 	{
-		printf("VALID PARSE\n");
-		printf("%30s\t SYMBOL TABLE \n", " ");
-		printf("%30s %s\n", " ", "------------");
+		printf("\033[6;32mVALID PARSE\033[0m\n");
+		printf("%45s\t\033[33m SYMBOL TABLE\033[0m \n", " ");
+		printf("%48s %s\n", " ", "\033[33m------------\033[0m");
 		printSymbolTable();
 	}	
 }
 
 void yyerror(char *s)
 {
-	printf("Line No. : %d %s %s\n",yylineno, s, yytext);
+	printf("\033[6;31mINVALID PARSE\033[0m\n");
+	printf("\033[31mLine No. : %d %s %s\033[0m\n",yylineno, s, yytext);
 	flag=1;
-	printf("INVALID PARSE\n");
 }
 
 void insert_type()
