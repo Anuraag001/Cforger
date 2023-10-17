@@ -69,11 +69,19 @@ declaration
 			| function_dec
 			| structure_dec
 			| file_dec
+			| define_dec
 			;
 	
 file_dec
         : INCLUDE '<' identifier ".h" '>'
 		;
+
+define_dec
+        : DEFINE identifier identifier
+		| DEFINE identifier INT
+		| DEFINE identifier FLOAT
+		;
+		
 
 
 structure_dec
