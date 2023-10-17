@@ -1,8 +1,11 @@
 *.exe
 lex.yy.c
-y.tab.c
-y.tab.h
+*.tab.c
+*.tab.h
 compiler.tab.c
 compiler.tab.h
 *.out
 .vscode
+input.txt
+Test Cases/
+Photos/
