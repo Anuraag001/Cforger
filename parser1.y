@@ -1,26 +1,37 @@
 %{
-    #include <stdio.h>
-    #include <stdlib.h>
-    
+	void yyerror(char* s);
+	int yylex();
+	#include "stdio.h"
+	#include "stdlib.h"
+	#include "ctype.h"
+	#include "string.h"
+	void insert_type();
+	void insert_value();
+	void insert_dimensions();
+	void insert_parameters();
+	extern int flag;
+	int insert_flag = 0;
 
- /*%token AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INT LONG REGISTER RETURN SHORT SIGNED SIZEOF STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
-%token ID NUMBER SPECIAL _CHAR _STRING PRINTF SCANF MAIN SPACE
-%token string_constant character_constant INCREMENT DECREMENT AND_AND OR_OR NOT LEFT_SHIFT RIGHT_SHIFT SUBTRACT_EQUAL ADD_EQUAL MOD_EQUAL MULTIPLE_EQUAL DIVIDE_EQUAL GREATER LESSER LESS_EQUAL GREAT_EQUAL EQUAL_EQUAL NOT_EQUAL _INTEGER _FLOAT*/
+	extern char current_identifier[20];
+	extern char current_type[20];
+	extern char current_value[20];
+    extern char current_function[20];
+	extern char previous_operator[20];
+
 %}
 
 %nonassoc IF
-%token AUTO CHAR CONST DOUBLE ENUM EXTERN FLOAT INT LONG REGISTER SHORT SIGNED SIZEOF STATIC STRUCT TYPEDEF UNION UNSIGNED VOLATILE 
+%token INT CHAR FLOAT DOUBLE LONG SHORT SIGNED UNSIGNED STRUCT
 %token RETURN MAIN
 %token VOID
 %token WHILE FOR DO 
 %token BREAK CONTINUE GOTO
 %token ENDIF
 %token SWITCH CASE DEFAULT
-%token PRINTF SCANF LEFT_SHIFT RIGHT_SHIFT MULTIPLE_EQUAL EQUAL_EQUAL SPECIAL _CHAR SPACE _STRING WHITESPACE
 %expect 2
 
-%token ID
-%token _INTEGER string_constant _FLOAT character_constant
+%token identifier
+%token integer_constant string_constant float_constant character_constant
 
 %nonassoc ELSE
 
@@ -33,7 +44,7 @@
 %left AND_AND
 %left '^'
 %left EQUAL NOT_EQUAL
-%left LESS_EQUAL LESSER GREAT_EQUAL GREATER
+%left LESS_EQUAL LESS GREAT_EQUAL GREAT
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -43,8 +54,8 @@
 
 
 %start begin_parse
-%%
 
+%%
 begin_parse
 			: declarations;
 
@@ -59,7 +70,7 @@ declaration
 			| structure_dec;
 
 structure_dec
-			: STRUCT ID  '{' structure_content  '}' ';';
+			: STRUCT identifier { insert_type(); } '{' structure_content  '}' ';';
 
 structure_content : variable_dec structure_content | ;
 
@@ -68,26 +79,26 @@ variable_dec
 			| structure_initialize;
 
 structure_initialize 
-			: STRUCT ID variables;
+			: STRUCT identifier variables;
 
 variables
-			: ID_name multiple_variables;
+			: identifier_name multiple_variables;
 
 multiple_variables
 			: ',' variables 
 			| ;
 
-ID_name 
-			: ID extended_ID;
+identifier_name 
+			: identifier { insert_type(); } extended_identifier;
 
-extended_ID : array_ID | '=' expression ; 
+extended_identifier : array_identifier | '='{strcpy(previous_operator,"=");} expression ; 
 
-array_ID
+array_identifier
 			: '[' array_dims
 			| ;
 
 array_dims
-			: _INTEGER ']' initilization
+			: integer_constant {insert_dimensions();} ']' initilization
 			| ']' string_initilization;
 
 initilization
@@ -96,13 +107,13 @@ initilization
 			| ;
 
 string_initilization
-			: '=' string_constant ;
+			: '='{strcpy(previous_operator,"=");} string_constant { insert_value(); };
 
 array_initialization
-			: '=' '{' array_values '}';
+			: '='{strcpy(previous_operator,"=");} '{' array_values '}';
 
 array_values
-			: _INTEGER multiple_array_values;
+			: integer_constant multiple_array_values;
 
 multiple_array_values
 			: ',' array_values 
@@ -133,23 +144,23 @@ function_dec
 			: function_datatype function_parameters;
 
 function_datatype
-			: datatype ID '(';
+			: datatype identifier '('  {strcpy(current_function,current_identifier); insert_type();};
 
 function_parameters
 			: parameters ')' statement;
 
 parameters 
-			: datatype all_parameter_IDs | ;
+			: datatype all_parameter_identifiers | ;
 
-all_parameter_IDs 
-			: parameter_ID multiple_parameters;
+all_parameter_identifiers 
+			: parameter_identifier multiple_parameters;
 
 multiple_parameters
 			: ',' parameters 
 			| ;
 
-parameter_ID 
-			: ID extended_parameter;
+parameter_identifier 
+			: identifier { insert_parameters(); insert_type(); } extended_parameter;
 
 extended_parameter
 			: '[' ']'
@@ -204,12 +215,12 @@ expression
 			| simple_expression ;
 
 expressions
-			: '=' expression 
-			| ADD_EQUAL expression 
-			| SUBTRACT_EQUAL expression 
-			| MULTIPLY_EQUAL expression 
-			| DIVIDE_EQUAL expression 
-			| MOD_EQUAL expression 
+			: '='{strcpy(previous_operator,"=");} expression 
+			| ADD_EQUAL{strcpy(previous_operator,"+=");} expression 
+			| SUBTRACT_EQUAL{strcpy(previous_operator,"-=");} expression 
+			| MULTIPLY_EQUAL{strcpy(previous_operator,"*=");} expression 
+			| DIVIDE_EQUAL{strcpy(previous_operator,"/=");} expression 
+			| MOD_EQUAL{strcpy(previous_operator,"%=");} expression 
 			| INCREMENT 
 			| DECREMENT ;
 
@@ -238,12 +249,12 @@ regular_expression_breakup
 			| ;
 
 relational_operators 
-			: GREAT_EQUAL
-			| LESS_EQUAL
-			| GREATER
-			| LESSER
-			| EQUAL
-			| NOT_EQUAL;
+			: GREAT_EQUAL{strcpy(previous_operator,">=");}
+			| LESS_EQUAL{strcpy(previous_operator,"<=");}
+			| GREAT{strcpy(previous_operator,">");} 
+			| LESS{strcpy(previous_operator,"<");}
+			| EQUAL{strcpy(previous_operator,"==");}
+			| NOT_EQUAL{strcpy(previous_operator,"!=");} ;
 
 sum_expression 
 			: sum_expression sum_operators term 
@@ -264,19 +275,19 @@ factor
 			: func | iden ;
 
 iden 
-			: ID 
+			: identifier 
 			| iden extended_iden;
 
 extended_iden
 			: '[' expression ']' 
-			| '.' ID;
+			| '.' identifier;
 
 func 
-			: '(' expression ')' 
+			: '('{strcpy(previous_operator,"(");} expression ')' 
 			| func_call | constant;
 
 func_call
-			: ID '(' arguments ')';
+			: identifier '('{strcpy(previous_operator,"(");} arguments ')';
 
 arguments 
 			: arguments_list | ;
@@ -289,17 +300,69 @@ extended_arguments
 			| ;
 
 constant 
-			: _INTEGER
-			| string_constant	
-			| _FLOAT
-			| character_constant;
+			: integer_constant 	{ insert_value(); } 
+			| string_constant	{ insert_value(); } 
+			| float_constant	{ insert_value(); } 
+			| character_constant{ insert_value(); };
 
 %%
-int yyerror(char *s) {
-    fprintf(stderr, "%s\n", s);
+
+extern FILE *yyin;
+extern int yylineno;
+extern char *yytext;
+void insert_SymbolTable_type(char *,char *);
+void insert_SymbolTable_value(char *, char *);
+void insert_ConstantTable(char *, char *);
+void insert_SymbolTable_arraydim(char *, char *);
+void insert_SymbolTable_funcparam(char *, char *);
+void printSymbolTable();
+void printConstantTable();
+
+
+int main()
+{
+	yyin = fopen("input.txt", "r");
+	int true=!yyparse();
+
+	if(true)
+	{
+		printf("VALID PARSE\n");
+		printf("%30s\t SYMBOL TABLE \n", " ");
+		printf("%30s %s\n", " ", "------------");
+		printSymbolTable();
+	}	
 }
 
-int main(){
-    yyparse();
-    return 0;
+void yyerror(char *s)
+{
+	printf("Line No. : %d %s %s\n",yylineno, s, yytext);
+	flag=1;
+	printf("INVALID PARSE\n");
+}
+
+void insert_type()
+{
+	insert_SymbolTable_type(current_identifier,current_type);
+}
+
+void insert_value()
+{	
+	if(strcmp(previous_operator, "=") == 0)
+	{	insert_SymbolTable_value(current_identifier,current_value);
+	}
+}	
+
+void insert_dimensions()
+{
+    insert_SymbolTable_arraydim(current_identifier, current_value);
+}
+
+void insert_parameters()
+{
+    insert_SymbolTable_funcparam(current_function, current_identifier);
+}
+
+int yywrap()
+{
+	return 1;
 }
