@@ -13,6 +13,8 @@
     char temp[100];
     char stoi[100];
     bool  in_comment = false;int comment_line ;
+    char str[100]; int strLen = 0;
+    bool  in_string = false;int string_line ;
     int brack_count=0, parenth_count=0, curli_count=0;
     int brack_line=0, parenth_line=0, curli_line=0;
     
@@ -22,11 +24,11 @@
 
 DIGIT       [0-9]
 LETTER      [_a-zA-Z]
-ID          {LETTER}({LETTER}|{DIGIT})*
+ID          {LETTER}({LETTER}|{DIGIT}){1,32}
 NUMBER      {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 SPECIAL     [&@$#]+
 ALPHA       [a-zA-Z]
-%x comment
+%x comment string
 
 %%
 "#include"[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h>" {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
@@ -84,16 +86,23 @@ ALPHA       [a-zA-Z]
 <comment>\n { /* Do nothing, newline characters are ignored inside comments */ }
 <comment>. { }
 
+\" { BEGIN(string); in_string = true; string_line = l_count; }
+<string>\" { BEGIN(INITIAL); if(in_string){ 
+                 in_string = false;
+                 hash_algo(str, strLen,"String", l_count);
+                } 
+            }
+<string>\n { /* Do nothing, newline characters are ignored inside comments */ }
+<string>[^"]* { strcpy(str,yytext); strLen=yyleng; }
 
+\(  {  parenth_count++; if(parenth_count != 0) parenth_line = l_count;}
+\{  {  curli_count++; if(curli_count != 0) curli_line = l_count;}
+\[  { brack_count++; if(brack_count != 0) brack_line = l_count;}
+\)  { parenth_count--; if(parenth_count != 0) parenth_line = l_count;}
+\}  {  curli_count--; if(curli_count != 0) curli_line = l_count;}
+\]  {  brack_count--; if(brack_count != 0) brack_line = l_count;}
 
-\(  { hash_algo(yytext,yyleng,"R_Parenthesis",l_count); parenth_count++; if(parenth_count != 0) parenth_line = l_count;}
-\{  { hash_algo(yytext,yyleng,"R_Brace",l_count); curli_count++; if(curli_count != 0) curli_line = l_count;}
-\[  { hash_algo(yytext,yyleng,"R_Bracket",l_count); brack_count++; if(brack_count != 0) brack_line = l_count;}
-\)  { hash_algo(yytext,yyleng,"L_Parenthesis",l_count);parenth_count--; if(parenth_count != 0) parenth_line = l_count;}
-\}  { hash_algo(yytext,yyleng,"L_Brace",l_count); curli_count--; if(curli_count != 0) curli_line = l_count;}
-\]  { hash_algo(yytext,yyleng,"L_Bracket",l_count); brack_count--; if(brack_count != 0) brack_line = l_count;}
-
-    /* to detect strings */
+    /* to detect strings 
 \"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
 \"                   { 
                         strcpy(temp,"Line ");
@@ -102,7 +111,7 @@ ALPHA       [a-zA-Z]
                         strcat(temp," String literal incomplete.");
                         head=push_error(temp,head);
                      }
-
+*/
     /* characters , some escape sequence might go unnoticed */
 '[^'\\]'|'\\[^'~!@#$%^&*_+-+=]'          { hash_algo(yytext,yyleng,"Character",l_count); }  
 '[^']{2,}'                               {
@@ -113,7 +122,7 @@ ALPHA       [a-zA-Z]
                                             head=push_error(temp,head); 
                                          }
 
-    /* Operators */
+    /* Operators 
 ,|;                          { hash_algo(yytext,yyleng,"Delimiter",l_count); }
 "++"|"--"                    { hash_algo(yytext,yyleng,"Unary Operator",l_count); }
 "+"|"-"|"*"|"%"|"/"          { hash_algo(yytext,yyleng,"Arithmetic Op.",l_count); } 
@@ -121,6 +130,7 @@ ALPHA       [a-zA-Z]
 "&"|"|"|"^"|"~"|"<<"|">>"    { hash_algo(yytext,yyleng,"Bitwise Op.",l_count); }  
 "="|"-="|"+="|"*="|"/="|"%=" { hash_algo(yytext,yyleng,"Assignment Op.",l_count); } 
 "<"|">"|"<="|">="|"=="|"!="  { hash_algo(yytext,yyleng,"Relational Op.",l_count); }
+    */
 [?][^?:]*                    { 
                               strcpy(temp,"Line ");
                               sprintf(stoi,"%d:",l_count);
@@ -139,7 +149,16 @@ ALPHA       [a-zA-Z]
 (auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 (for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 (switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
-{ID}        { strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
+{ID}        { if(yyleng > 32){
+                                strcpy(temp,"Line ");
+                              sprintf(stoi,"%d:",l_count);
+                              strcat(temp,stoi);
+                              strcat(temp," Identifier length exceeds max limit 32.");
+                              head=push_error(temp,head);
+                            }
+              else{
+                 strcpy(type,"Identifier"); hash_algo(yytext,yyleng,type,l_count);}
+              } 
 #include  {hash_algo(yytext,yyleng,"Preprocessor",l_count);}
 {NUMBER}    { hash_algo(yytext,yyleng,"number",l_count);}
 {DIGIT}({LETTER}|{DIGIT}|{SPECIAL})* {
@@ -216,8 +235,9 @@ fclose(yyin);
         p=p->next;
     }
     if ( in_comment != 0) printf("\033[31mLine %d: Multiline comment: missing \"*/\" .\n\033[0m", comment_line);
+    if ( in_string != 0) printf("\033[31mLine %d: Incomplete string.\n\033[0m", string_line);
     if ( brack_count != 0) printf("\033[31mLine %d: Incomplete brackets .\n\033[0m", brack_line);
-    if ( curli_count != 0) printf("\033[31mLine %d: Incomplete curly braces .\n\033[0m", curli_line);
+    if ( curli_count != 0) printf("\033[31mLine %d: Incomplete curly braces.\n\033[0m", curli_line);
     if ( parenth_count != 0) printf("\033[31mLine %d: Incomplete paranthesis.\n\033[0m", parenth_line);
 
     return 0;
