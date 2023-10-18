@@ -86,6 +86,7 @@ ALPHA       [a-zA-Z]
 <comment>\n { /* Do nothing, newline characters are ignored inside comments */ }
 <comment>. { }
 
+    /* to detect strings */
 \" { BEGIN(string); in_string = true; string_line = l_count; }
 <string>\" { BEGIN(INITIAL); if(in_string){ 
                  in_string = false;
@@ -102,16 +103,7 @@ ALPHA       [a-zA-Z]
 \}  {  curli_count--; if(curli_count != 0) curli_line = l_count;}
 \]  {  brack_count--; if(brack_count != 0) brack_line = l_count;}
 
-    /* to detect strings 
-\"(\\.|[^"])*\"      { hash_algo(yytext,yyleng-2,"String literal",l_count); }  
-\"                   { 
-                        strcpy(temp,"Line ");
-                        sprintf(stoi,"%d:",l_count);
-                        strcat(temp,stoi);
-                        strcat(temp," String literal incomplete.");
-                        head=push_error(temp,head);
-                     }
-*/
+
     /* characters , some escape sequence might go unnoticed */
 '[^'\\]'|'\\[^'~!@#$%^&*_+-+=]'          { hash_algo(yytext,yyleng,"Character",l_count); }  
 '[^']{2,}'                               {
