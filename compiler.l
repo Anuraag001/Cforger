@@ -30,7 +30,7 @@ ALPHA       [a-zA-Z]
 %x comment string
 
 %%
-"#include"[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h>" {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
+"#include"[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h>" { /*hash_algo(yytext,yyleng,"Preprocessor Directive",l_count); */ }
 ("#include"|"include")[ ]*{ALPHA}({ALPHA}|{DIGIT})*".h>" {
                                                             strcpy(temp,"Line ");
                                                             sprintf(stoi,"%d",l_count);
@@ -49,7 +49,7 @@ ALPHA       [a-zA-Z]
                                                             head=push_error(temp,head);
                                                             temp[0]='\0';
                                                             }
-"#include"[ ]*\"(.)*\" {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
+"#include"[ ]*\"(.)*\" { /*hash_algo(yytext,yyleng,"Preprocessor Directive",l_count); */}
 ("#include"|"include")[ ]*(.)*\"    {
                                     strcpy(temp,"Line ");
                                     sprintf(stoi,"%d",l_count);
@@ -68,7 +68,7 @@ ALPHA       [a-zA-Z]
                                     head=push_error(temp,head);
                                     temp[0]='\0'; 
                                     }
-"#define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)* {hash_algo(yytext,yyleng,"Preprocessor Directive",l_count);}
+"#define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)* { /*hash_algo(yytext,yyleng,"Preprocessor Directive",l_count); */}
 "define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)*  {
                                                 strcpy(temp,"Line ");
                                                 sprintf(stoi,"%d",l_count);
@@ -132,8 +132,8 @@ ALPHA       [a-zA-Z]
 [?][^?:]*[:]                 { hash_algo("?:",2,"Conditional Op.",l_count); }
 
 
-"0"|[0-9]{DIGIT}*                     { hash_algo(yytext,yyleng,"INTEGER",l_count); }           
-"0"|{DIGIT}*"."{DIGIT}+         { hash_algo(yytext,yyleng,"FLOAT",l_count); }
+"0"|[0-9]{DIGIT}*                     { /* hash_algo(yytext,yyleng,"INTEGER",l_count); */ }           
+"0"|{DIGIT}*"."{DIGIT}+         { /*hash_algo(yytext,yyleng,"FLOAT",l_count); */ }
 
 
 
