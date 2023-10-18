@@ -327,11 +327,9 @@ extern int yylineno;
 extern char *yytext;
 void insert_SymbolTable_type(char *,char *);
 void insert_SymbolTable_value(char *, char *);
-void insert_ConstantTable(char *, char *);
 void insert_SymbolTable_arraydim(char *, char *);
 void insert_SymbolTable_funcparam(char *, char *);
 void printSymbolTable();
-void printConstantTable();
 
 
 int main()

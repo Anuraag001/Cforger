@@ -1,4 +1,3 @@
-//ERROR FREE - This test case includes array declarations, and conditional statements
 #include<stdio.h>
 
 int main()

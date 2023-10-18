@@ -2,12 +2,6 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "parser1.tab.h"
-
-	struct ConstantTable{
-		char constant_name[100];
-		char constant_type[100];
-		int exist;
-	}CT[1000];
 	
 	struct SymbolTable{
 		char symbol_name[100];
@@ -18,6 +12,7 @@
         char parameters[100];
         int line_number;
 		int exist;
+		int length;
 	}ST[1000];
 
 	unsigned long hash(unsigned char *str)
@@ -29,31 +24,6 @@
 			hash = ((hash << 5) + hash) + c;
 
 		return hash;
-	}
-
-	int search_ConstantTable(char* str){
-		unsigned long temp_val = hash(str);
-		int val = temp_val%1000;
-		
-		if(CT[val].exist == 0){
-			return 0;
-		}
-		
-		else if(strcmp(CT[val].constant_name, str) == 0)
-		{
-			return 1;
-		}
-		else
-		{
-			for(int i = val+1 ; i!=val ; i = (i+1)%1000)
-			{
-				if(strcmp(CT[i].constant_name,str)==0)
-				{
-					return 1;
-				}
-			}
-			return 0;
-		}
 	}
 
 	
@@ -83,38 +53,9 @@
 	}
 	
 	
-	void insert_ConstantTable(char* name, char* type){
-		int index = 0;
-		 if(search_ConstantTable(name)){
-			return;
-		}
-		else{
-			unsigned long temp_val = hash(name);
-			int val = temp_val%1000;
-			if(CT[val].exist == 0){
-				strcpy(CT[val].constant_name, name);
-				strcpy(CT[val].constant_type, type);
-				CT[val].exist = 1;
-				return;
-			}
-			
-			for(int i = val+1; i != val; i = (i+1)%1000){
-				if(CT[i].exist == 0){
-					index = i;
-					break;
-				}
-			}
-			strcpy(CT[index].constant_name, name);
-			strcpy(CT[index].constant_type, type);
-			CT[index].exist = 1;			
-		}
-	}
-	
 	void insert_SymbolTable(char* name, char* class){
 		int index = 0;
-		//printf("BBBB");
 		 if(search_SymbolTable(name)){
-			//printf("AAAAAA");
 			return;
 		}
 		else{
@@ -125,6 +66,9 @@
 				strcpy(ST[val].class, class);
                 ST[val].line_number = yylineno;
 				ST[val].exist = 1;
+				int i=0;
+				while(name[i]!='\0') i++;
+				ST[val].length=i;
 				return;
 			}
 			
@@ -196,23 +140,13 @@
 		}
 	}
 
-	void printConstantTable(){
-		printf("%20s | %20s\n", "CONSTANT","TYPE");
-		for(int i = 0; i < 1000; ++i){
-			if(CT[i].exist == 0)
-				continue;
-				
-			printf("%20s | %20s\n", CT[i].constant_name, CT[i].constant_type);
-		}
-	}
-
 	void printSymbolTable(){
-        printf("\033[34m\t\t%10s | %18s | %10s | %10s | %10s | %10s | %10s\033[0m\n","SYMBOL", "CLASS", "TYPE","VALUE","DIMENSIONS","PARAMENTERS","LINE NO");
-		printf("\033[34m\t\t-----------------------------------------------------------------------------------------------------\033[0m\n");
+        printf("\033[34m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s| %-10s | %-10s\033[0m\n","Token", "Token_Type", "Datatype","VALUE","DIMENSIONS","PARAMENTERS","LINE NO","LENGTH");
+		printf("\033[34m\t-------------------------------------------------------------------------------------------------------------\033[0m\n");
 		for(int i = 0; i < 1000; ++i){
 			if(ST[i].exist == 0)
 				continue;
-			printf("\033[32m\t\t%10s | %18s | %10s | %10s | %10s | %10s | %10d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters,ST[i].line_number);
+			printf("\033[32m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s | %-10d | %-10d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters,ST[i].line_number,ST[i].length);
 		}
 	}
 	char current_identifier[20];
@@ -300,13 +234,13 @@ IN "include"
 "case"			{ insert_SymbolTable(yytext, "Keyword");  return CASE;}
 "default"		{ insert_SymbolTable(yytext, "Keyword");  return DEFAULT;}
 
-("\"")[^\n\"]*("\"")                         {strcpy(current_value,yytext); insert_ConstantTable(yytext,"String Constant"); return string_constant;}        
+("\"")[^\n\"]*("\"")                         {strcpy(current_value,yytext); return string_constant;}        
 ("\"")[^\n\"]*                               { printf("Line No. %d ERROR: UNCLOSED STRING - %s\n", yylineno, yytext); return 0;}
-("\'")(("\\"({escape_sequences}))|.)("\'")   {strcpy(current_value,yytext); insert_ConstantTable(yytext,"Character Constant"); return character_constant;}
+("\'")(("\\"({escape_sequences}))|.)("\'")   {strcpy(current_value,yytext); return character_constant;}
 ("\'")(((("\\")[^0abfnrtv\\\"\'][^\n\']*))|[^\n\''][^\n\'']+)("\'") {printf("Line No. %d ERROR: NOT A CHARACTER - %s\n", yylineno, yytext); return 0; }
-{num}+(\.{num}+)?e{num}+   		        {strcpy(current_value,yytext); insert_ConstantTable(yytext, "Floating Constant"); return float_constant;} 
-{num}+\.{num}+                		    {strcpy(current_value,yytext); insert_ConstantTable(yytext, "Floating Constant"); return float_constant;}                                             
-{num}+                           	   	{strcpy(current_value,yytext); insert_ConstantTable(yytext, "Number Constant"); return integer_constant;}    
+{num}+(\.{num}+)?e{num}+   		        {strcpy(current_value,yytext); return float_constant;} 
+{num}+\.{num}+                		    {strcpy(current_value,yytext); return float_constant;}                                             
+{num}+                           	   	{strcpy(current_value,yytext); return integer_constant;}    
 (_|{alpha})({alpha}|{alpha}|_)*  		{strcpy(current_identifier,yytext);insert_SymbolTable(yytext,"Identifier");  return identifier;}
 (_|{alpha})({alpha}|{alpha}|_)*/\[  	{strcpy(current_identifier,yytext);insert_SymbolTable(yytext,"Array Identifier");  return identifier;}
 {ws}										 ;
