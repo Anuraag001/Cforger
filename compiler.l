@@ -4,7 +4,6 @@
     #include <string.h>
     #include "sym_table.c"
     #include "errors.c"
-    #include "compiler.tab.h"
     
     void Print(char *);
     char type[20];
@@ -86,8 +85,8 @@ ALPHA       [a-zA-Z]
 <comment>\n { /* Do nothing, newline characters are ignored inside comments */ }
 <comment>. { }
 
-    /* to detect strings */
 \" { BEGIN(string); in_string = true; string_line = l_count; }
+    /* to detect strings */
 <string>\" { BEGIN(INITIAL); if(in_string){ 
                  in_string = false;
                  hash_algo(str, strLen,"String", l_count);
