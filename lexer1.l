@@ -2,7 +2,7 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "parser1.tab.h"
-	
+	int F=1;
 	struct SymbolTable{
 		char symbol_name[100];
 		char symbol_type[100];
@@ -275,9 +275,17 @@ IN "include"
 "?"											 {return *yytext;}
 .											 { flag = 1;
 											   if(yytext[0] == '#')
-													printf("Line No. %d PREPROCESSOR ERROR - %s\n", yylineno, yytext);
+											   		{
+														printf("\033[6;31mINVALID PARSE\033[0m\n");
+														printf("\033[31mLine No. %d PREPROCESSOR ERROR - %s\033[0m\n", yylineno, yytext);
+													}
+													
 											   else
-													printf("Line No. %d ERROR ILLEGAL CHARACTER - %s\n", yylineno, yytext);
+													{	printf("\033[31mLine No. %d ERROR ILLEGAL CHARACTER - %s\033[0m\n", yylineno, yytext);
+														printf("\033[6;31mINVALID PARSE\033[0m\n");
+													}
+												
+												F=0;
 											  return 0;}
 
 %%

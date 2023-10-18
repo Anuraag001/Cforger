@@ -5,6 +5,7 @@
 	#include "stdlib.h"
 	#include "ctype.h"
 	#include "string.h"
+	extern int F;
 	void insert_type();
 	void insert_value();
 	void insert_dimensions();
@@ -337,7 +338,7 @@ int main()
 	yyin = fopen("input.txt", "r");
 	int true=!yyparse();
 
-	if(true)
+	if(true && F)
 	{
 		printf("\033[6;32mVALID PARSE\033[0m\n");
 		printf("%45s\t\033[33m SYMBOL TABLE\033[0m \n", " ");

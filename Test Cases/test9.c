@@ -9,7 +9,7 @@ struct book
 
 int main()
 {
-	int num = 3;
+	int  num = 3;
 	printf("Hello");
 
 }

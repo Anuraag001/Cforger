@@ -75,6 +75,7 @@
 	#include "stdlib.h"
 	#include "ctype.h"
 	#include "string.h"
+	extern int F;
 	void insert_type();
 	void insert_value();
 	void insert_dimensions();
@@ -91,7 +92,7 @@
 
 
 /* Line 189 of yacc.c  */
-#line 95 "parser1.tab.c"
+#line 96 "parser1.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -183,7 +184,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 187 "parser1.tab.c"
+#line 188 "parser1.tab.c"
 
 #ifdef short
 # undef short
@@ -527,23 +528,23 @@ static const yytype_int16 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    60,    60,    63,    64,    68,    69,    70,    71,    72,
-      76,    80,    81,    82,    88,    88,    90,    90,    93,    94,
-      97,   100,   103,   104,   107,   107,   109,   109,   109,   112,
-     113,   116,   116,   117,   120,   121,   122,   125,   125,   128,
-     128,   131,   134,   135,   139,   139,   139,   139,   140,   141,
-     142,   143,   144,   147,   147,   147,   147,   150,   150,   150,
-     150,   153,   153,   156,   156,   159,   162,   165,   168,   168,
-     171,   174,   175,   178,   178,   181,   182,   185,   185,   186,
-     186,   187,   187,   188,   191,   194,   195,   198,   199,   202,
-     205,   206,   209,   210,   211,   214,   215,   216,   219,   222,
-     223,   226,   229,   230,   233,   233,   234,   234,   235,   235,
-     236,   236,   237,   237,   238,   238,   239,   240,   243,   246,
-     246,   249,   252,   253,   256,   257,   260,   263,   264,   267,
-     268,   269,   270,   271,   272,   275,   276,   279,   280,   283,
-     284,   287,   287,   287,   290,   290,   293,   294,   297,   298,
-     301,   301,   302,   302,   305,   305,   308,   308,   311,   314,
-     315,   318,   319,   320,   321
+       0,    61,    61,    64,    65,    69,    70,    71,    72,    73,
+      77,    81,    82,    83,    89,    89,    91,    91,    94,    95,
+      98,   101,   104,   105,   108,   108,   110,   110,   110,   113,
+     114,   117,   117,   118,   121,   122,   123,   126,   126,   129,
+     129,   132,   135,   136,   140,   140,   140,   140,   141,   142,
+     143,   144,   145,   148,   148,   148,   148,   151,   151,   151,
+     151,   154,   154,   157,   157,   160,   163,   166,   169,   169,
+     172,   175,   176,   179,   179,   182,   183,   186,   186,   187,
+     187,   188,   188,   189,   192,   195,   196,   199,   200,   203,
+     206,   207,   210,   211,   212,   215,   216,   217,   220,   223,
+     224,   227,   230,   231,   234,   234,   235,   235,   236,   236,
+     237,   237,   238,   238,   239,   239,   240,   241,   244,   247,
+     247,   250,   253,   254,   257,   258,   261,   264,   265,   268,
+     269,   270,   271,   272,   273,   276,   277,   280,   281,   284,
+     285,   288,   288,   288,   291,   291,   294,   295,   298,   299,
+     302,   302,   303,   303,   306,   306,   309,   309,   312,   315,
+     316,   319,   320,   321,   322
 };
 #endif
 
@@ -1659,196 +1660,196 @@ yyreduce:
         case 14:
 
 /* Line 1464 of yacc.c  */
-#line 88 "parser1.y"
+#line 89 "parser1.y"
     { insert_type(); ;}
     break;
 
   case 24:
 
 /* Line 1464 of yacc.c  */
-#line 107 "parser1.y"
+#line 108 "parser1.y"
     { insert_type(); ;}
     break;
 
   case 27:
 
 /* Line 1464 of yacc.c  */
-#line 109 "parser1.y"
+#line 110 "parser1.y"
     {strcpy(previous_operator,"=");;}
     break;
 
   case 31:
 
 /* Line 1464 of yacc.c  */
-#line 116 "parser1.y"
+#line 117 "parser1.y"
     {insert_dimensions();;}
     break;
 
   case 37:
 
 /* Line 1464 of yacc.c  */
-#line 125 "parser1.y"
+#line 126 "parser1.y"
     {strcpy(previous_operator,"=");;}
     break;
 
   case 38:
 
 /* Line 1464 of yacc.c  */
-#line 125 "parser1.y"
+#line 126 "parser1.y"
     { insert_value(); ;}
     break;
 
   case 39:
 
 /* Line 1464 of yacc.c  */
-#line 128 "parser1.y"
+#line 129 "parser1.y"
     {strcpy(previous_operator,"=");;}
     break;
 
   case 66:
 
 /* Line 1464 of yacc.c  */
-#line 162 "parser1.y"
+#line 163 "parser1.y"
     {strcpy(current_function,current_identifier); insert_type();;}
     break;
 
   case 73:
 
 /* Line 1464 of yacc.c  */
-#line 178 "parser1.y"
+#line 179 "parser1.y"
     { insert_parameters(); insert_type(); ;}
     break;
 
   case 104:
 
 /* Line 1464 of yacc.c  */
-#line 233 "parser1.y"
+#line 234 "parser1.y"
     {strcpy(previous_operator,"=");;}
     break;
 
   case 106:
 
 /* Line 1464 of yacc.c  */
-#line 234 "parser1.y"
+#line 235 "parser1.y"
     {strcpy(previous_operator,"+=");;}
     break;
 
   case 108:
 
 /* Line 1464 of yacc.c  */
-#line 235 "parser1.y"
+#line 236 "parser1.y"
     {strcpy(previous_operator,"-=");;}
     break;
 
   case 110:
 
 /* Line 1464 of yacc.c  */
-#line 236 "parser1.y"
+#line 237 "parser1.y"
     {strcpy(previous_operator,"*=");;}
     break;
 
   case 112:
 
 /* Line 1464 of yacc.c  */
-#line 237 "parser1.y"
+#line 238 "parser1.y"
     {strcpy(previous_operator,"/=");;}
     break;
 
   case 114:
 
 /* Line 1464 of yacc.c  */
-#line 238 "parser1.y"
+#line 239 "parser1.y"
     {strcpy(previous_operator,"%=");;}
     break;
 
   case 129:
 
 /* Line 1464 of yacc.c  */
-#line 267 "parser1.y"
+#line 268 "parser1.y"
     {strcpy(previous_operator,">=");;}
     break;
 
   case 130:
 
 /* Line 1464 of yacc.c  */
-#line 268 "parser1.y"
+#line 269 "parser1.y"
     {strcpy(previous_operator,"<=");;}
     break;
 
   case 131:
 
 /* Line 1464 of yacc.c  */
-#line 269 "parser1.y"
+#line 270 "parser1.y"
     {strcpy(previous_operator,">");;}
     break;
 
   case 132:
 
 /* Line 1464 of yacc.c  */
-#line 270 "parser1.y"
+#line 271 "parser1.y"
     {strcpy(previous_operator,"<");;}
     break;
 
   case 133:
 
 /* Line 1464 of yacc.c  */
-#line 271 "parser1.y"
+#line 272 "parser1.y"
     {strcpy(previous_operator,"==");;}
     break;
 
   case 134:
 
 /* Line 1464 of yacc.c  */
-#line 272 "parser1.y"
+#line 273 "parser1.y"
     {strcpy(previous_operator,"!=");;}
     break;
 
   case 150:
 
 /* Line 1464 of yacc.c  */
-#line 301 "parser1.y"
+#line 302 "parser1.y"
     {strcpy(previous_operator,"(");;}
     break;
 
   case 154:
 
 /* Line 1464 of yacc.c  */
-#line 305 "parser1.y"
+#line 306 "parser1.y"
     {strcpy(previous_operator,"(");;}
     break;
 
   case 161:
 
 /* Line 1464 of yacc.c  */
-#line 318 "parser1.y"
+#line 319 "parser1.y"
     { insert_value(); ;}
     break;
 
   case 162:
 
 /* Line 1464 of yacc.c  */
-#line 319 "parser1.y"
+#line 320 "parser1.y"
     { insert_value(); ;}
     break;
 
   case 163:
 
 /* Line 1464 of yacc.c  */
-#line 320 "parser1.y"
+#line 321 "parser1.y"
     { insert_value(); ;}
     break;
 
   case 164:
 
 /* Line 1464 of yacc.c  */
-#line 321 "parser1.y"
+#line 322 "parser1.y"
     { insert_value(); ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 1852 "parser1.tab.c"
+#line 1853 "parser1.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2060,7 +2061,7 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 323 "parser1.y"
+#line 324 "parser1.y"
 
 
 extern FILE *yyin;
@@ -2078,7 +2079,7 @@ int main()
 	yyin = fopen("input.txt", "r");
 	int true=!yyparse();
 
-	if(true)
+	if(true && F)
 	{
 		printf("\033[6;32mVALID PARSE\033[0m\n");
 		printf("%45s\t\033[33m SYMBOL TABLE\033[0m \n", " ");
