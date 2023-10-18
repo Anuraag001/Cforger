@@ -89,7 +89,7 @@ ALPHA       [a-zA-Z]
     /* to detect strings */
 <string>\" { BEGIN(INITIAL); if(in_string){ 
                  in_string = false;
-                 hash_algo(str, strLen,"String", l_count);
+                 /*hash_algo(str, strLen,"String", l_count);*/
                 } 
             }
 <string>\n { /* Do nothing, newline characters are ignored inside comments */ }
