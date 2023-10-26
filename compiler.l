@@ -23,7 +23,7 @@
 
 DIGIT       [0-9]
 LETTER      [_a-zA-Z]
-ID          {LETTER}({LETTER}|{DIGIT}){1,32}
+ID          {LETTER}({LETTER}|{DIGIT}){0,32}
 NUMBER      {DIGIT}+(\.{DIGIT}+)?(E[+\-]?{DIGIT}+)?
 SPECIAL     [&@$#]+
 ALPHA       [a-zA-Z]
