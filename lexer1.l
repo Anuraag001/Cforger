@@ -241,7 +241,7 @@ IN "include"
 ("\'")(((("\\")[^0abfnrtv\\\"\'][^\n\']*))|[^\n\''][^\n\'']+)("\'") {printf("Line No. %d ERROR: NOT A CHARACTER - %s\n", yylineno, yytext); return 0; }
 {num}+(\.{num}+)?e{num}+   		        {strcpy(current_value,yytext); return float_constant;} 
 {num}+\.{num}+                		    {strcpy(current_value,yytext); return float_constant;}                                             
-{num}+                           	   	{strcpy(current_value,yytext); return integer_constant;}    
+{num}+                           	   	{strcpy(current_value,yytext); yylval=atoi(yytext); return integer_constant;}    
 (_|{alpha})({alpha}|{alpha}|_)*  		{strcpy(current_identifier,yytext);insert_SymbolTable(yytext,"Identifier");  return identifier;}
 (_|{alpha})({alpha}|{alpha}|_)*/\[  	{strcpy(current_identifier,yytext);insert_SymbolTable(yytext,"Array Identifier");  return identifier;}
 {ws}										 ;

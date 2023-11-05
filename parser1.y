@@ -18,6 +18,8 @@
 	extern char current_value[20];
     extern char current_function[20];
 	extern char previous_operator[20];
+	char temp[20];
+	char fi[20];
 
 %}
 
@@ -114,13 +116,13 @@ array_identifier
 			| ;
 
 array_dims
-			: integer_constant {insert_dimensions();} ']' initilization
+			: integer_constant ']' {sprintf(temp,"%d",$1); printf("%d\n",$1); strcat(fi,temp);} initilization {strcpy(current_value,fi); insert_dimensions();}
 			| ']' string_initilization;
 
 initilization
 			: string_initilization
 			| array_initialization
-			| '[' integer_constant ']'
+			| '[' integer_constant {strcat(fi,"*"); sprintf(temp,"%d",$2); strcat(fi,temp); } ']' initilization
 			| ;
 
 string_initilization
