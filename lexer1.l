@@ -158,6 +158,7 @@
 
 %}
 
+%option noyywrap
 num              	[0-9]
 alpha              	[a-zA-Z]
 alphanum            {alpha}|{num}

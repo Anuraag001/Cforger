@@ -120,6 +120,7 @@ array_dims
 initilization
 			: string_initilization
 			| array_initialization
+			| '[' integer_constant ']'
 			| ;
 
 string_initilization
@@ -137,7 +138,7 @@ multiple_array_values
 
 
 datatype 
-			: INT | CHAR | FLOAT | DOUBLE 
+			: INT | CHAR | FLOAT | DOUBLE | INT '*' {strcpy(current_type,"int*");}| CHAR '*' {strcpy(current_type,"char*");} | FLOAT '*' {strcpy(current_type,"float*");}
 			| LONG long_grammar 
 			| SHORT short_grammar
 			| UNSIGNED unsigned_grammar 
