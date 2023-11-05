@@ -1,5 +1,5 @@
-union s {
-  int a;
-  int b;
-  char c; // The compiler issues a warning message.
-};
+int main(){
+    for(int i = 0, k = 0; i < 5 && k < 10; i++, k--){
+		count--;
+	}
+}

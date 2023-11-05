@@ -221,13 +221,18 @@ extended_conditional_statements
 
 iterative_statements 
 			: WHILE '(' simple_expression ')' statement 
-			| FOR '(' for_initialization simple_expression ';' expression ')' 
+			| FOR '(' for_initialization simple_expression ';' for_updation ')' 
 			| DO statement WHILE '(' simple_expression ')' ';';
 
 for_initialization
 			: variable_dec
 			| expression ';'
 			| ';' ;
+
+for_updation
+			: for_updation ',' expression
+			| expression
+			;
 
 return_statement 
 			: RETURN return_suffix;
