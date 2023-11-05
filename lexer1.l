@@ -207,6 +207,7 @@ IN "include"
 "{"                                          {return *yytext;}
 "}"                                          {return *yytext;}
 ","                                          {return *yytext;}
+":"                                          {return *yytext;}
 ";"                                          {return *yytext;}
 
 

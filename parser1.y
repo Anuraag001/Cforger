@@ -223,6 +223,7 @@ iterative_statements
 			: WHILE '(' simple_expression ')' statement 
 			| FOR '(' for_initialization simple_expression ';' for_updation ')' 
 			| DO statement WHILE '(' simple_expression ')' ';';
+			| SWITCH '(' identifier ')' '{' switch_cases '}'
 
 for_initialization
 			: variable_dec
@@ -233,7 +234,11 @@ for_updation
 			: for_updation ',' expression
 			| expression
 			;
-
+switch_cases 
+			: switch_cases CASE constant ':' statments
+			| switch_cases DEFAULT  ':' statments
+			| CASE constant ':' statments
+			;
 return_statement 
 			: RETURN return_suffix;
 
