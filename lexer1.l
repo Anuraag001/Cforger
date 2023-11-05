@@ -226,6 +226,7 @@ IN "include"
 "signed"		{ strcpy(current_type,yytext); insert_SymbolTable(yytext, "Keyword");  return SIGNED;}
 "sizeof" 		{ insert_SymbolTable(yytext, "Keyword");  return SIZEOF;}
 "struct" 		{ strcpy(current_type,yytext); insert_SymbolTable(yytext, "Keyword");  return STRUCT;}
+"union" 		{ strcpy(current_type,yytext); insert_SymbolTable(yytext, "Keyword");  return UNION;}
 "unsigned"		{ insert_SymbolTable(yytext, "Keyword");  return UNSIGNED;}
 "void"			{ strcpy(current_type,yytext); insert_SymbolTable(yytext, "Keyword");  return VOID;}
 "break"			{ insert_SymbolTable(yytext, "Keyword");  return BREAK;}

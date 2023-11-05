@@ -24,7 +24,7 @@
 %}
 
 %nonassoc IF
-%token INT CHAR FLOAT DOUBLE LONG SHORT SIGNED UNSIGNED STRUCT
+%token INT CHAR FLOAT DOUBLE LONG SHORT SIGNED UNSIGNED STRUCT UNION
 %token RETURN MAIN INCLUDE DEFINE
 %token VOID
 %token WHILE FOR DO 
@@ -73,6 +73,7 @@ declaration
 			| structure_dec
 			| file_dec
 			| define_dec
+			| union_dec
 			;
 	
 file_dec
@@ -92,12 +93,21 @@ structure_dec
 
 structure_content : variable_dec structure_content | ;
 
+union_dec
+          : UNION identifier { insert_type(); } '{' union_content  '}' ';';
+
+union_content : variable_dec union_content | ;
+
 variable_dec
 			: datatype variables ';' 
-			| structure_initialize;
+			| structure_initialize
+			|union_initialize;
 
 structure_initialize 
 			: STRUCT identifier variables;
+
+union_initialize
+            : UNION identifier variables;
 
 variables
 			: identifier_name multiple_variables;

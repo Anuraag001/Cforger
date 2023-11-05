@@ -1,0 +1,5 @@
+union s {
+  int a;
+  int b;
+  char c; // The compiler issues a warning message.
+};
