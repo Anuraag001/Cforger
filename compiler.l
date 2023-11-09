@@ -7,15 +7,15 @@
     
     void Print(char *);
     char type[20];
-    int l_count=1;
+    unsigned int l_count=1;
     Error* head;
     char temp[100];
     char stoi[100];
-    bool  in_comment = false;int comment_line ;
-    char str[100]; int strLen = 0;
-    bool  in_string = false;int string_line ;
-    int brack_count=0, parenth_count=0, curli_count=0;
-    int brack_line=0, parenth_line=0, curli_line=0;
+    bool  in_comment = false;unsigned int comment_line ;
+    char str[100]; unsigned int strLen = 0;
+    bool  in_string = false;unsigned int string_line ;
+    unsigned int brack_count=0, parenth_count=0, curli_count=0;
+    unsigned int brack_line=0, parenth_line=0, curli_line=0;
     
 %}
 
@@ -33,7 +33,7 @@ ALPHA       [a-zA-Z]
 "#include"[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h>" { /*hash_algo(yytext,yyleng,"Preprocessor Directive",l_count); */ }
 ("#include"|"include")[ ]*{ALPHA}({ALPHA}|{DIGIT})*".h>" {
                                                             strcpy(temp,"Line ");
-                                                            sprintf(stoi,"%d",l_count);
+                                                            sprintf(stoi,"%u",l_count);
                                                             strcat(temp,stoi);
                                                             strcat(temp,": Incorrect preprocessor defination: ");
                                                             strcat(temp,yytext);
@@ -42,7 +42,7 @@ ALPHA       [a-zA-Z]
                                                             }
 ("#include"|"include")[ ]*"<"{ALPHA}({ALPHA}|{DIGIT})*".h" {
                                                             strcpy(temp,"Line ");
-                                                            sprintf(stoi,"%d",l_count);
+                                                            sprintf(stoi,"%u",l_count);
                                                             strcat(temp,stoi);
                                                             strcat(temp,": Incorrect preprocessor defination: ");
                                                             strcat(temp,yytext);
@@ -52,7 +52,7 @@ ALPHA       [a-zA-Z]
 "#include"[ ]*\"(.)*\" { /*hash_algo(yytext,yyleng,"Preprocessor Directive",l_count); */}
 ("#include"|"include")[ ]*(.)*\"    {
                                     strcpy(temp,"Line ");
-                                    sprintf(stoi,"%d",l_count);
+                                    sprintf(stoi,"%u",l_count);
                                     strcat(temp,stoi);
                                     strcat(temp,": Incorrect preprocessor defination: ");
                                     strcat(temp,yytext);
@@ -61,7 +61,7 @@ ALPHA       [a-zA-Z]
                                     }
 ("#include"|"include")[ ]*\"(.)*   {                                   
                                     strcpy(temp,"Line ");
-                                    sprintf(stoi,"%d",l_count);
+                                    sprintf(stoi,"%u",l_count);
                                     strcat(temp,stoi);
                                     strcat(temp,": Incorrect preprocessor defination: ");
                                     strcat(temp,yytext);
@@ -71,14 +71,14 @@ ALPHA       [a-zA-Z]
 "#define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)* { /*hash_algo(yytext,yyleng,"Preprocessor Directive",l_count); */}
 "define"[ ]*({LETTER})({ALPHA}|{DIGIT})*[ ]*(.)*  {
                                                 strcpy(temp,"Line ");
-                                                sprintf(stoi,"%d",l_count);
+                                                sprintf(stoi,"%u",l_count);
                                                 strcat(temp,stoi);
                                                 strcat(temp,": Incorrect preprocessor defination: ");
                                                 strcat(temp,yytext);
                                                 head=push_error(temp,head);
                                                 temp[0]='\0';
                                                 }
-\/\/.*  {printf("\033[32mSingle line Comment present in %d line\033[0m\n",l_count);}
+\/\/.*  {printf("\033[32mSingle line Comment present in %u line\033[0m\n",l_count);}
     /* to detect multiline comments */
 "/*" { BEGIN(comment); in_comment = true; comment_line = l_count; }
 <comment>"*/" { BEGIN(INITIAL); if(in_comment) in_comment = false; }
@@ -107,7 +107,7 @@ ALPHA       [a-zA-Z]
 '[^'\\]'|'\\[^'~!@#$%^&*_+-+=]'          { hash_algo(yytext,yyleng,"Character",l_count); }  
 '[^']{2,}'                               {
                                             strcpy(temp,"Line ");
-                                            sprintf(stoi,"%d:",l_count);
+                                            sprintf(stoi,"%u:",l_count);
                                             strcat(temp,stoi);
                                             strcat(temp," Character overflow.");
                                             head=push_error(temp,head); 
@@ -124,7 +124,7 @@ ALPHA       [a-zA-Z]
     */
 [?][^?:]*                    { 
                               strcpy(temp,"Line ");
-                              sprintf(stoi,"%d:",l_count);
+                              sprintf(stoi,"%u:",l_count);
                               strcat(temp,stoi);
                               strcat(temp," Missing ':' Conditional Operator");
                               head=push_error(temp,head); 
@@ -142,7 +142,7 @@ ALPHA       [a-zA-Z]
 (switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while) { strcpy(type,"keyword");hash_algo(yytext,yyleng,type,l_count);}
 {ID}        { if(yyleng > 32){
                                 strcpy(temp,"Line ");
-                              sprintf(stoi,"%d:",l_count);
+                              sprintf(stoi,"%u:",l_count);
                               strcat(temp,stoi);
                               strcat(temp," Identifier length exceeds max limit 32.");
                               head=push_error(temp,head);
@@ -154,7 +154,7 @@ ALPHA       [a-zA-Z]
 {NUMBER}    { hash_algo(yytext,yyleng,"number",l_count);}
 {DIGIT}({LETTER}|{DIGIT}|{SPECIAL})* {
                                     strcpy(temp,"Line ");
-                                    sprintf(stoi,"%d:",l_count);
+                                    sprintf(stoi,"%u:",l_count);
                                     strcat(temp,stoi);
                                     strcat(temp," identifier cannot start with digit i.e ");
                                     strcat(temp,yytext);
@@ -162,7 +162,7 @@ ALPHA       [a-zA-Z]
                                     }
 {SPECIAL}({LETTER}|{DIGIT})* {
                             strcpy(temp,"Line ");
-                            sprintf(stoi,"%d:",l_count);
+                            sprintf(stoi,"%u:",l_count);
                             strcat(temp,stoi);
                             strcat(temp," identifier cannot start with special character i.e ");
                             strcat(temp,yytext);
@@ -170,7 +170,7 @@ ALPHA       [a-zA-Z]
                             }
 {LETTER}({LETTER}|{DIGIT})*{SPECIAL}({LETTER}|{DIGIT})* {
                                                         strcpy(temp,"Line ");
-                                                        sprintf(stoi,"%d:",l_count);
+                                                        sprintf(stoi,"%u:",l_count);
                                                         strcat(temp,stoi);
                                                         strcat(temp," identifier cannot have a special character in between i.e");
                                                         strcat(temp,yytext);
@@ -205,14 +205,14 @@ fclose(yyin);
                 printf("------------------------------------------------------------------------------------------------\n");
 
 	for(int i=0;i<100;i++){
-		//printf("Index %d:",i);
+		//printf("Index %u:",i);
 		symbol* current =hash[i];
 		while(current!=NULL){
 			printf("%-25s | %-10d | %-25s | %-11d",current->name,current->length,current->token,current->scope);
             Line* ptr=current->line_num;
             printf("| ");
             while(ptr!=NULL){
-                printf("%d ",ptr->line);
+                printf("%u ",ptr->line);
                 ptr=ptr->next;
             }
             printf("\n");
@@ -225,11 +225,11 @@ fclose(yyin);
         printf("\033[31m%s\n\033[0m",p->str);
         p=p->next;
     }
-    if ( in_comment != 0) printf("\033[31mLine %d: Multiline comment: missing \"*/\" .\n\033[0m", comment_line);
-    if ( in_string != 0) printf("\033[31mLine %d: Incomplete string.\n\033[0m", string_line);
-    if ( brack_count != 0) printf("\033[31mLine %d: Incomplete brackets .\n\033[0m", brack_line);
-    if ( curli_count != 0) printf("\033[31mLine %d: Incomplete curly braces.\n\033[0m", curli_line);
-    if ( parenth_count != 0) printf("\033[31mLine %d: Incomplete paranthesis.\n\033[0m", parenth_line);
+    if ( in_comment != 0) printf("\033[31mLine %u: Multiline comment: missing \"*/\" .\n\033[0m", comment_line);
+    if ( in_string != 0) printf("\033[31mLine %u: Incomplete string.\n\033[0m", string_line);
+    if ( brack_count != 0) printf("\033[31mLine %u: Incomplete brackets .\n\033[0m", brack_line);
+    if ( curli_count != 0) printf("\033[31mLine %u: Incomplete curly braces.\n\033[0m", curli_line);
+    if ( parenth_count != 0) printf("\033[31mLine %u: Incomplete paranthesis.\n\033[0m", parenth_line);
 
     return 0;
 }
