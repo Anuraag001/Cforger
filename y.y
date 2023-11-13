@@ -401,9 +401,9 @@ void printSymbolTable();
 void printConstantTable();
 
 
-int main()
+int main(int argc, char *argv[])
 {
-	yyin = fopen("test2.c", "r");
+	yyin = fopen(argv[1], "r");
 	yyparse();
 
 	if(flag == 0)
