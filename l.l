@@ -357,12 +357,12 @@
 
 
 	void printSymbolTable(){
-        printf("\033[34m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s| %-10s\033[0m\n","Token", "Token_Type", "Datatype","VALUE","DIMENSIONS","PARAMENTERS","LINE NO");
+        printf("\033[34m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s| %-10s| %-10s| %-10s\033[0m\n","Token", "Token_Type", "Datatype","VALUE","DIMENSIONS","PARAMENTERS","LINE NO","NESTED","PARAMETER COUNT");
 		printf("\033[34m\t-------------------------------------------------------------------------------------------------------------\033[0m\n");
 		for(int i = 0; i < 1000; ++i){
 			if(ST[i].exist == 0)
 				continue;
-			printf("\033[32m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s | %-10d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters,ST[i].line_number);
+			printf("\033[32m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s | %-10d| %-10d| %-10d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters,ST[i].line_number,ST[i].nested_val,ST[i].params_count);
 		}
 	}
 	char current_identifier[20];
