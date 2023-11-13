@@ -381,10 +381,10 @@ A
 			| ;
 
 constant
-			: integer_constant 	{  insert_type(); $$=1; }
-			| string_constant	{  insert_type(); $$=-1;}
-			| float_constant	{  insert_type(); }
-			| character_constant{  insert_type();$$=1; };
+			: integer_constant 	{  insert_type(); $$=1; insert_value();}
+			| string_constant	{  insert_type(); $$=-1; insert_value();}
+			| float_constant	{  insert_type(); insert_value();}
+			| character_constant{  insert_type();$$=1; insert_value();};
 
 
 %%

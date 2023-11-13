@@ -15,6 +15,7 @@
 		int exist;
 		int nested_val;
 		int params_count;
+		int checkt;
 	}ST[1000];
 
 	int current_nested_val = 0;
@@ -109,7 +110,7 @@
 	{
 		for(int i = 0 ; i < 1001 ; i++)
 		{
-			if(strcmp(ST[i].symbol_name,str1)==0 && ST[i].nested_val != current_nested_val)
+			if(strcmp(ST[i].symbol_name,str1)==0 /*&& ST[i].nested_val != current_nested_val*/)
 			{
 				strcpy(ST[i].value,str2);
 			}
@@ -135,6 +136,7 @@
 			{
 				strcat(ST[i].parameters," ");
                 strcat(ST[i].parameters,param);
+				ST[i].checkt++;
 			}
 		}
 	}
@@ -358,11 +360,11 @@
 
 	void printSymbolTable(){
         printf("\033[34m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s| %-10s| %-10s| %-10s\033[0m\n","Token", "Token_Type", "Datatype","VALUE","DIMENSIONS","PARAMENTERS","LINE NO","NESTED","PARAMETER COUNT");
-		printf("\033[34m\t-------------------------------------------------------------------------------------------------------------\033[0m\n");
+		printf("\033[34m\t--------------------------------------------------------------------------------------------------------------------------------\033[0m\n");
 		for(int i = 0; i < 1000; ++i){
 			if(ST[i].exist == 0)
 				continue;
-			printf("\033[32m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s | %-10d| %-10d| %-10d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters,ST[i].line_number,ST[i].nested_val,ST[i].params_count);
+			printf("\033[32m\t%-10s | %-18s | %-10s | %-10s | %-10s | %-10s | %-10d| %-10d| %-10d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters,ST[i].line_number,ST[i].nested_val,ST[i].checkt);
 		}
 	}
 	char current_identifier[20];
