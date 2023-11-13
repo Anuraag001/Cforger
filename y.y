@@ -394,11 +394,9 @@ extern int yylineno;
 extern char *yytext;
 void insert_SymbolTable_type(char *,char *);
 void insert_SymbolTable_value(char *, char *);
-void insert_ConstantTable(char *, char *);
 void insert_SymbolTable_arraydim(char *, char *);
 void insert_SymbolTable_funcparam(char *, char *);
 void printSymbolTable();
-void printConstantTable();
 
 
 int main(int argc, char *argv[])
@@ -412,18 +410,14 @@ int main(int argc, char *argv[])
 		printf("%30s SYMBOL TABLE \n", " ");
 		printf("%30s %s\n", " ", "------------");
 		printSymbolTable();
-
-		printf("\n\n%30s CONSTANT TABLE \n", " ");
-		printf("%30s %s\n", " ", "--------------");
-		printConstantTable();
 	}
 }
 
 void yyerror(char *s)
 {
-	printf("Line No. : %d %s %s\n",yylineno, s, yytext);
+	printf("\033[31mLine No. : %d %s %s\033[0m\n",yylineno, s, yytext);
 	flag=1;
-	printf("\nUNSUCCESSFUL: INVALID PARSE\n");
+	printf("\n\033[31mUNSUCCESSFUL: INVALID PARSE\033[0m\n");
 }
 
 void insert_type()
