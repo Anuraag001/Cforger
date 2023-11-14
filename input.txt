@@ -1,19 +1,8 @@
-int temp(int aaa,int g){
-    int temp_val;
-    return 0;
-}
+#include<stdio.h>
 
-int main(){
-    int a=10;
-    char rgggg[10]="dfsf";
-    int array_re[100];
-    printf("Hello World");
-    for(int i=0;i<222;i++){
-        int yaaa;
-    }
-    return 0;
-}
-
-int sss(int y){
-    return 0;
+int main()
+{
+	int A[5] = {1,2,3,4,5};
+	char kajab[10] = "Hello";
+	
 }
