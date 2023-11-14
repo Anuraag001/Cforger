@@ -22,6 +22,8 @@
 	int check_array(char*);
 	void insert_SymbolTable_function(char*);
 	char gettype(char*,int);
+	char fi[100];
+	char temp[100];
 
 	extern int flag;
 	int insert_flag = 0;
@@ -146,12 +148,13 @@ array_iden
 			| ;
 
 array_dims
-			: integer_constant {insert_dimensions();} ']' initilization{if($$ < 1) {yyerror("\033[31mArray must have size greater than 1!\033[0m\n"); exit(0);} }
+			: integer_constant ']' {sprintf(temp,"%d",$1); printf("%d\n",$1); strcat(fi,temp);} initilization {strcpy(current_value,fi); insert_dimensions();}
 			| ']' string_initilization;
 
 initilization
 			: string_initilization
 			| array_initialization
+			| '[' integer_constant {strcat(fi,"*"); sprintf(temp,"%d",$2); strcat(fi,temp); } ']' initilization
 			| ;
 
 string_initilization
@@ -462,7 +465,7 @@ void yyerror(char *s)
 {
 	printf("\033[31mLine No. : %d %s %s\033[0m\n",yylineno, s, yytext);
 	flag=1;
-	printf("\n\033[33mUNSUCCESSFUL: INVALID PARSE\033[0m\n");
+	printf("\n\033[31mUNSUCCESSFUL: INVALID PARSE\033[0m\n");
 }
 
 void insert_type()

@@ -1,0 +1,15 @@
+int yt=100;
+int main(){
+    int a[10][100][200];
+    int i=100;
+    while(i-1){
+        int h=90;
+        while(h-1){
+            
+        }
+    }
+}
+
+int fun(int aaa){
+    int yu;
+}
