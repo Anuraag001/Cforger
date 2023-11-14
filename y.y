@@ -144,11 +144,11 @@ identifier_name
 extended_identifier : array_iden | '='{strcpy(previous_operator,"=");} simple_expression ;
 
 array_iden
-			: '[' array_dims
+			: '[' array_dims {strcpy(fi,"");}
 			| ;
 
 array_dims
-			: integer_constant ']' {sprintf(temp,"%d",$1); printf("%d\n",$1); strcat(fi,temp);} initilization {strcpy(current_value,fi); insert_dimensions();}
+			: integer_constant ']' {sprintf(temp,"%d",$1);  strcat(fi,temp);} initilization {strcpy(current_value,fi); insert_dimensions();}
 			| ']' string_initilization;
 
 initilization
@@ -450,7 +450,7 @@ int main()
 
 	if(flag == 0)
 	{
-		
+
 		printf("\033[6;32mVALID PARSE\033[0m\n");
 		printf("%50s \033[33mSYMBOL TABLE\033[0m \n", " ");
 		printf("%50s %s\n", " ", "\033[33m------------\033[0m");

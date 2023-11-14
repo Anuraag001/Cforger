@@ -1,15 +1,16 @@
-int yt=100;
-int main(){
-    int a[10][100][200];
-    int i=100;
-    while(i-1){
-        int h=90;
-        while(h-1){
-            
-        }
-    }
-}
+#include<stdio.h>
 
-int fun(int aaa){
-    int yu;
+struct book
+{
+	char name[10];
+	char author[10];
+    char shit[100];
+	
+};
+
+int main()
+{
+	int num = 3;
+	printf("Hello");
+
 }
