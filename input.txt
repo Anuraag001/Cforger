@@ -1,8 +1,13 @@
 #include<stdio.h>
 
+int hh(int y,float b,int c)
+{
+	return 0;
+}
 int main()
 {
 	int A[5] = {1,2,3,4,5};
+	int a=9;
 	char kajab[10] = "Hello";
 	
 }

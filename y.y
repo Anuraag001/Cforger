@@ -109,9 +109,9 @@ multiple_variables
 
 identifier_name
 			: identifier { if(check_function(current_identifier))
-						  {yyerror("ERROR: Identifier cannot be same as function name!\n"); exit(8);}
-						  if(duplicate(current_identifier)){yyerror("Duplicate value!\n");exit(0);}insert_SymbolTable_nest(current_identifier,current_nested_val); insert_type(); } extended_identifier
-			| array_identifier {if(duplicate(current_identifier)){yyerror("Duplicate value!\n");exit(0);}insert_SymbolTable_nest(current_identifier,current_nested_val); insert_type();  } extended_identifier;
+						  {yyerror("\033[31mERROR: Identifier cannot be same as function name!\033[0m\n"); exit(8);}
+						  if(duplicate(current_identifier)){yyerror("\033[31mDuplicate value!\033[0m\n");exit(0);}insert_SymbolTable_nest(current_identifier,current_nested_val); insert_type(); } extended_identifier
+			| array_identifier {if(duplicate(current_identifier)){yyerror("\033[31mDuplicate value!\033[0m\n");exit(0);}insert_SymbolTable_nest(current_identifier,current_nested_val); insert_type();  } extended_identifier;
 
 extended_identifier : array_iden | '='{strcpy(previous_operator,"=");} simple_expression ;
 
@@ -120,7 +120,7 @@ array_iden
 			| ;
 
 array_dims
-			: integer_constant {insert_dimensions();} ']' initilization{if($$ < 1) {yyerror("Array must have size greater than 1!\n"); exit(0);} }
+			: integer_constant {insert_dimensions();} ']' initilization{if($$ < 1) {yyerror("\033[31mArray must have size greater than 1!\033[0m\n"); exit(0);} }
 			| ']' string_initilization;
 
 initilization
@@ -206,16 +206,16 @@ expression_statment
 			| ';' ;
 
 conditional_statements
-			: IF '(' simple_expression ')' {if($3!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} statement extended_conditional_statements;
+			: IF '(' simple_expression ')' {if($3!=1){yyerror("\033[31mERROR: Here, condition must have integer value!\033[0m\n");exit(0);}} statement extended_conditional_statements;
 
 extended_conditional_statements
 			: ELSE statement
 			| ;
 
 iterative_statements
-			: WHILE '(' simple_expression ')'{if($3!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} statement
-			| FOR '(' for_initialization simple_expression ';' {if($4!=1){yyerror("Here, condition must have integer value!\n");exit(0);}} expression ')'
-			| DO statement WHILE '(' simple_expression ')' {if($5!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} ';';
+			: WHILE '(' simple_expression ')'{if($3!=1){yyerror("\033[31mERROR: Here, condition must have integer value!\033[0m\n");exit(0);}} statement
+			| FOR '(' for_initialization simple_expression ';' {if($4!=1){yyerror("\033[31mHere, condition must have integer value!\033[0m\n");exit(0);}} expression ')'
+			| DO statement WHILE '(' simple_expression ')' {if($5!=1){yyerror("\033[31mERROR: Here, condition must have integer value!\033[0m\n");exit(0);}} ';';
 
 for_initialization
 			: variable_dec
@@ -223,15 +223,15 @@ for_initialization
 			| ';' ;
 
 return_statement
-			: RETURN ';' {if(strcmp(currfunctype,"void")) {yyerror("ERROR: Cannot have void return for non-void function!\n"); exit(0);}}
+			: RETURN ';' {if(strcmp(currfunctype,"void")) {yyerror("\033[31mERROR: Cannot have void return for non-void function!\033[0m\n"); exit(0);}}
 			| RETURN expression ';' { 	if(!strcmp(currfunctype, "void"))
 										{
-											yyerror("Non-void return for void function!"); exit(0);
+											yyerror("\033[31mNon-void return for void function!\033[0m"); exit(0);
 										}
 
 										if((currfunctype[0]=='i' || currfunctype[0]=='c') && $2!=1)
 										{
-											yyerror("Expression doesn't match return type of function\n"); exit(0);
+											yyerror("\033[31mExpression doesn't match return type of function\033[0m\n"); exit(0);
 										}
 
 			                     	};
@@ -247,38 +247,38 @@ expression
 			                                                          $$=1;
 			                                                          }
 			                                                          else
-			                                                          {$$=-1; yyerror("Type Mismatch\n"); exit(0);}
+			                                                          {$$=-1; yyerror("\033[31mType Mismatch\033[0m\n"); exit(0);}
 			                                                       }
 			| mutable ADD_EQUAL expression     {					strcpy(previous_operator,"+=");
 																	  if($1==1 && $3==1)
 			                                                          $$=1;
 			                                                          else
-			                                                          {$$=-1; yyerror("Type Mismatch\n"); exit(0);}
+			                                                          {$$=-1; yyerror("\033[31mType Mismatch\033[0m\n"); exit(0);}
 			                                                       }
 			| mutable SUBTRACT_EQUAL expression  {					strcpy(previous_operator,"-=");
 																	  if($1==1 && $3==1)
 			                                                          $$=1;
 			                                                          else
-			                                                          {$$=-1; yyerror("Type Mismatch\n"); exit(0);}
+			                                                          {$$=-1; yyerror("\033[31mType Mismatch\033[0m\n"); exit(0);}
 			                                                       }
 
 			| mutable MULTIPLY_EQUAL expression {					strcpy(previous_operator,"*=");
 																	  if($1==1 && $3==1)
 			                                                          $$=1;
 			                                                          else
-			                                                          {$$=-1; yyerror("Type Mismatch\n"); exit(0);}
+			                                                          {$$=-1; yyerror("\033[31mType Mismatch\033[0m\n"); exit(0);}
 			                                                       }
 			| mutable DIVIDE_EQUAL expression 		{				strcpy(previous_operator,"/=");
 																	  if($1==1 && $3==1)
 			                                                          $$=1;
 			                                                          else
-			                                                          {$$=-1; yyerror("Type Mismatch\n"); exit(0);}
+			                                                          {$$=-1; yyerror("\033[31mType Mismatch\033[0m\n"); exit(0);}
 			                                                       }
 			| mutable MOD_EQUAL expression 		{					strcpy(previous_operator,"%=");
 																	  if($1==1 && $3==1)
 			                                                          $$=1;
 			                                                          else
-			                                                          {$$=-1; yyerror("Type Mismatch\n"); exit(0);}
+			                                                          {$$=-1; yyerror("\033[31mType Mismatch\033[0m\n"); exit(0);}
 			                                                       }
 
 			| mutable INCREMENT 							{if($1 == 1) $$=1; else $$=-1;}
@@ -332,15 +332,15 @@ factor
 mutable
 			: identifier {
 			              if(!check_scope(current_identifier))
-			              {printf("%s\n",current_identifier);yyerror("Identifier undeclared\n");exit(0);}
+			              {printf("%s\n",current_identifier);yyerror("\033[31mIdentifier undeclared\033[0m\n");exit(0);}
 			              if(!check_array(current_identifier))
-			              {printf("%s\n",current_identifier);yyerror("Array Identifier has No Subscript\n");exit(0);}
+			              {printf("%s\n",current_identifier);yyerror("\033[31mArray Identifier has No Subscript\033[0m\n");exit(0);}
 			              if(gettype(current_identifier,0)=='i' || gettype(current_identifier,1)== 'c')
 			              $$ = 1;
 			              else
 			              $$ = -1;
 			              }
-			| array_identifier {if(!check_scope(current_identifier)){printf("%s\n",current_identifier);yyerror("Identifier undeclared\n");exit(0);}} '[' expression ']'
+			| array_identifier {if(!check_scope(current_identifier)){printf("%s\n",current_identifier);yyerror("\033[31mIdentifier undeclared\033[0m\n");exit(0);}} '[' expression ']'
 			                   {if(gettype(current_identifier,0)=='i' || gettype(current_identifier,1)== 'c')
 			              		$$ = 1;
 			              		else
@@ -355,7 +355,7 @@ immutable
 call
 			: identifier '('{ strcpy(previous_operator,"(");
 			             if(!check_declaration(current_identifier, "Function"))
-			             { yyerror("Function not declared"); exit(0);}
+			             { yyerror("\033[31mFunction not declared\033[0m"); exit(0);}
 			             insert_SymbolTable_function(current_identifier);
 						 strcpy(currfunccall,current_identifier);
 			             } arguments ')'
@@ -363,7 +363,7 @@ call
 							{
 								if(getSTparamscount(currfunccall)!=call_params_count)
 								{
-									yyerror("Number of parameters not same as number of arguments during function call!");
+									yyerror("\033[31mNumber of parameters not same as number of arguments during function call!\033[0m");
 									//printf("Number of arguments in function call %s doesn't match number of parameters\n", currfunccall);
 									exit(8);
 								}
@@ -403,27 +403,27 @@ void printConstantTable();
 
 int main()
 {
-	yyin = fopen("test2.c", "r");
+	yyin = fopen("input.txt", "r");
 	yyparse();
 
 	if(flag == 0)
 	{
-		printf("VALID PARSE\n");
-		printf("%30s SYMBOL TABLE \n", " ");
-		printf("%30s %s\n", " ", "------------");
+		printf("\033[6;32mVALID PARSE\033[0m\n");
+		printf("%50s \033[33mSYMBOL TABLE\033[0m \n", " ");
+		printf("%50s %s\n", " ", "\033[33m------------\033[0m");
 		printSymbolTable();
 
-		printf("\n\n%30s CONSTANT TABLE \n", " ");
-		printf("%30s %s\n", " ", "--------------");
+		printf("\n\n%30s \033[33mCONSTANT TABLE\033[0m \n", " ");
+		printf("%30s %s\n", " ", "\033[33m--------------\033[0m");
 		printConstantTable();
 	}
 }
 
 void yyerror(char *s)
 {
-	printf("Line No. : %d %s %s\n",yylineno, s, yytext);
+	printf("\033[31mLine No. : %d %s %s\033[0m\n",yylineno, s, yytext);
 	flag=1;
-	printf("\nUNSUCCESSFUL: INVALID PARSE\n");
+	printf("\n\033[33mUNSUCCESSFUL: INVALID PARSE\033[0m\n");
 }
 
 void insert_type()

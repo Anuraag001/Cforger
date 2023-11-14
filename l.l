@@ -20,6 +20,7 @@
 		int exist;
 		int nested_val;
 		int params_count;
+		int p_count;
 	}ST[1000];
 
 	int current_nested_val = 0;
@@ -191,6 +192,7 @@
 			{
 				strcat(ST[i].parameters," ");
                 strcat(ST[i].parameters,param);
+				ST[i].p_count++;
 			}
 		}
 	}
@@ -346,8 +348,8 @@
 		{
 			if(strcmp(ST[i].symbol_name, str) == 0 && strcmp(ST[i].class, "Function") == 0)
 			{
-				printf("ERROR: Cannot Redeclare same function!\n");
-				printf("\nUNSUCCESSFUL: INVALID PARSE\n");
+				printf("\033[31mERROR: Cannot Redeclare same function!\033[0m\n");
+				printf("\n\033[31mUNSUCCESSFUL: INVALID PARSE\033[0m\n");
 				exit(0);
 			}
 		}
@@ -369,8 +371,8 @@
 	{
 		if(!strcmp(type_specifier, "void"))
 		{
-			printf("ERROR: Here, Parameter cannot be of void type\n");
-			printf("\nUNSUCCESSFUL: INVALID PARSE\n");
+			printf("\033[31mERROR: Here, Parameter cannot be of void type\033[0m\n");
+			printf("\n\033[31mUNSUCCESSFUL: INVALID PARSE\033[0m\n");
 			exit(0);
 		}
 		return 0;
@@ -412,21 +414,23 @@
 	}
 
 	void printConstantTable(){
-		printf("%20s | %20s\n", "CONSTANT","TYPE");
+		printf("\t\033[34m%20s \033[35m|\033[34m %10s\033[0m\n", "CONSTANT","TYPE");
+		printf("\033[35m\t\t------------------------------------\033[0m\n");
 		for(int i = 0; i < 1000; ++i){
 			if(CT[i].exist == 0)
 				continue;
 				
-			printf("%20s | %20s\n", CT[i].constant_name, CT[i].constant_type);
+			printf("\t\033[32m%20s \033[35m|\033[32m %20s\033[0m\n", CT[i].constant_name, CT[i].constant_type);
 		}
 	}
 
 	void printSymbolTable(){
-        printf("%10s | %18s | %10s | %10s | %10s | %10s | %10s | %10s | %10s\n","SYMBOL", "CLASS", "TYPE","VALUE","DIMENSIONS","PARAMETERS","PARAMETER COUNT", "NESTING", "LINE NO");
+        printf("\033[34m%10s \033[35m|\033[34m %18s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s\033[0m\n","SYMBOL", "CLASS", "TYPE","DIMENSIONS","PARAMETERS","PARAMETER COUNT", "NESTING", "LINE NO");
+		printf("\033[35m------------------------------------------------------------------------------------------------------------------------------\033[0m\n");
 		for(int i = 0; i < 1000; ++i){
 			if(ST[i].exist == 0)
 				continue;
-			printf("%10s | %18s | %10s | %10s | %10s | %10s | %15d | %10d | %d\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type, ST[i].value,ST[i].array_dimensions,ST[i].parameters, ST[i].params_count, ST[i].nested_val,ST[i].line_number);
+			printf("\033[32m%10s \033[35m|\033[32m %18s \033[35m|\033[32m %10s \033[35m|\033[32m %10s \033[35m|\033[32m %10s \033[35m|\033[32m %15d \033[35m|\033[32m %10d \033[35m|\033[32m %d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type,ST[i].array_dimensions,ST[i].parameters, ST[i].p_count, ST[i].nested_val,ST[i].line_number);
 		}
 	}
 	char current_identifier[20];
@@ -475,7 +479,7 @@ IN "include"
 <MLCOMMENT>[^/*\n]+						 	 ;
 <MLCOMMENT>[/]    							 ;
 <MLCOMMENT>\n     							 ;
-<MLCOMMENT><<EOF>>							 { printf("Line No. %d ERROR: MULTI LINE COMMENT NOT CLOSED\n", yylineno); return 0;}
+<MLCOMMENT><<EOF>>							 { printf("\033[31mLine No. %d ERROR: MULTI LINE COMMENT NOT CLOSED\033[0m\n", yylineno); return 0;}
 
 "["                                          {return *yytext;}
 "]"                                          {return *yytext;}
@@ -513,9 +517,9 @@ IN "include"
 "default"		{ insert_SymbolTable(yytext, "Keyword");  return DEFAULT;}
 
 ("\"")[^\n\"]*("\"")                         {strcpy(current_value,yytext); insert_ConstantTable(yytext,"String Constant"); return string_constant;}        
-("\"")[^\n\"]*                               { printf("Line No. %d ERROR: UNCLOSED STRING - %s\n", yylineno, yytext); return 0;}
+("\"")[^\n\"]*                               { printf("\033[31mLine No. %d ERROR: UNCLOSED STRING - %s\033[0m\n", yylineno, yytext); return 0;}
 ("\'")(("\\"({escape_sequences}))|.)("\'")   {strcpy(current_value,yytext); insert_ConstantTable(yytext,"Character Constant"); return character_constant;}
-("\'")(((("\\")[^0abfnrtv\\\"\'][^\n\']*))|[^\n\''][^\n\'']+)("\'") {printf("Line No. %d ERROR: NOT A CHARACTER - %s\n", yylineno, yytext); return 0; }
+("\'")(((("\\")[^0abfnrtv\\\"\'][^\n\']*))|[^\n\''][^\n\'']+)("\'") {printf("\033[31mLine No. %d ERROR: NOT A CHARACTER - %s\033[0m\n", yylineno, yytext); return 0; }
 {num}+(\.{num}+)?e{num}+   		        {strcpy(current_value,yytext); insert_ConstantTable(yytext, "Floating Constant"); return float_constant;} 
 {num}+\.{num}+                		    {strcpy(current_value,yytext); insert_ConstantTable(yytext, "Floating Constant"); return float_constant;}                                             
 {num}+                           	   	{strcpy(current_value,yytext); insert_ConstantTable(yytext, "Number Constant"); yylval = atoi(yytext); return integer_constant;}    
@@ -552,9 +556,9 @@ IN "include"
 "!="										 {return NOT_EQUAL;}
 .											 { flag = 1;
 											   if(yytext[0] == '#')
-													printf("Line No. %d PREPROCESSOR ERROR - %s\n", yylineno, yytext);
+													printf("\033[31mLine No. %d PREPROCESSOR ERROR - %s\033[0m\n", yylineno, yytext);
 											   else
-													printf("Line No. %d ERROR: ILLEGAL CHARACTER - %s\n", yylineno, yytext);
+													printf("\033[31mLine No. %d ERROR: ILLEGAL CHARACTER - %s\033[0m\n", yylineno, yytext);
 											  return 0;}
 
 %%
