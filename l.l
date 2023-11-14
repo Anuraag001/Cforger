@@ -21,6 +21,7 @@
 		int nested_val;
 		int params_count;
 		int p_count;
+		char scope[10];
 	}ST[1000];
 
 	int current_nested_val = 0;
@@ -419,18 +420,21 @@
 		for(int i = 0; i < 1000; ++i){
 			if(CT[i].exist == 0)
 				continue;
+
 				
 			printf("\t\033[32m%20s \033[35m|\033[32m %20s\033[0m\n", CT[i].constant_name, CT[i].constant_type);
 		}
 	}
 
 	void printSymbolTable(){
-        printf("\033[34m%10s \033[35m|\033[34m %18s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s\033[0m\n","SYMBOL", "CLASS", "TYPE","DIMENSIONS","PARAMETERS","PARAMETER COUNT", "NESTING", "LINE NO");
+        printf("\033[34m%10s \033[35m|\033[34m %18s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s \033[35m|\033[34m %10s\033[0m\n","SYMBOL", "CLASS", "TYPE","DIMENSIONS","PARAMETERS","PARAMETER COUNT", "Scope", "LINE NO");
 		printf("\033[35m------------------------------------------------------------------------------------------------------------------------------\033[0m\n");
 		for(int i = 0; i < 1000; ++i){
 			if(ST[i].exist == 0)
 				continue;
-			printf("\033[32m%10s \033[35m|\033[32m %18s \033[35m|\033[32m %10s \033[35m|\033[32m %10s \033[35m|\033[32m %10s \033[35m|\033[32m %15d \033[35m|\033[32m %10d \033[35m|\033[32m %d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type,ST[i].array_dimensions,ST[i].parameters, ST[i].p_count, ST[i].nested_val,ST[i].line_number);
+			if(ST[i].nested_val == 100) strcpy(ST[i].scope,"Local");
+			else strcpy(ST[i].scope,"Global");
+			printf("\033[32m%10s \033[35m|\033[32m %18s \033[35m|\033[32m %10s \033[35m|\033[32m %10s \033[35m|\033[32m %10s \033[35m|\033[32m %15d \033[35m|\033[32m %10s \033[35m|\033[32m %d\033[0m\n", ST[i].symbol_name, ST[i].class, ST[i].symbol_type,ST[i].array_dimensions,ST[i].parameters, ST[i].p_count, ST[i].scope,ST[i].line_number);
 		}
 	}
 	char current_identifier[20];

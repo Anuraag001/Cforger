@@ -450,6 +450,7 @@ int main()
 
 	if(flag == 0)
 	{
+		
 		printf("\033[6;32mVALID PARSE\033[0m\n");
 		printf("%50s \033[33mSYMBOL TABLE\033[0m \n", " ");
 		printf("%50s %s\n", " ", "\033[33m------------\033[0m");
