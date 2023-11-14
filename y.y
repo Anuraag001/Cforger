@@ -40,8 +40,8 @@
 %}
 
 %nonassoc IF
-%token INT CHAR FLOAT DOUBLE LONG SHORT SIGNED UNSIGNED STRUCT
-%token RETURN MAIN
+%token INT CHAR FLOAT DOUBLE LONG SHORT SIGNED UNSIGNED STRUCT UNION
+%token RETURN MAIN INCLUDE DEFINE
 %token VOID
 %token WHILE FOR DO
 %token BREAK CONTINUE GOTO
@@ -86,19 +86,45 @@ declarations
 declaration
 			: variable_dec
 			| function_dec
-			| structure_dec;
+			| structure_dec
+			| file_dec
+			| define_dec
+			| union_dec
+			;
+
+file_dec
+        : INCLUDE '<' identifier ".h" '>'
+		;
+
+define_dec
+        : DEFINE identifier identifier
+		| DEFINE identifier INT
+		| DEFINE identifier FLOAT
+		;
+
 
 structure_dec
 			: STRUCT identifier { insert_type(); } '{' structure_content  '}' ';';
 
 structure_content : variable_dec structure_content | ;
 
+union_dec
+          : UNION identifier { insert_type(); } '{' union_content  '}' ';';
+
+union_content : variable_dec union_content | ;
+
 variable_dec
 			: datatype variables ';'
-			| structure_initialize;
+			| structure_initialize
+			|union_initialize;
 
 structure_initialize
 			: STRUCT identifier variables;
+
+
+union_initialize
+            : UNION identifier variables;
+
 
 variables
 			: identifier_name multiple_variables;
@@ -143,7 +169,7 @@ multiple_array_values
 
 
 datatype
-			: INT | CHAR | FLOAT | DOUBLE
+			: INT | CHAR | FLOAT | DOUBLE | INT '*' {strcpy(current_type,"int*");}| CHAR '*' {strcpy(current_type,"char*");} | FLOAT '*' {strcpy(current_type,"float*");}
 			| LONG long_grammar
 			| SHORT short_grammar
 			| UNSIGNED unsigned_grammar
@@ -214,13 +240,26 @@ extended_conditional_statements
 
 iterative_statements
 			: WHILE '(' simple_expression ')'{if($3!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} statement
-			| FOR '(' for_initialization simple_expression ';' {if($4!=1){yyerror("Here, condition must have integer value!\n");exit(0);}} expression ')'
-			| DO statement WHILE '(' simple_expression ')' {if($5!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} ';';
+			| FOR '(' for_initialization simple_expression ';' {if($4!=1){yyerror("Here, condition must have integer value!\n");exit(0);}} for_updation ')' 
+			| DO statement WHILE '(' simple_expression ')' {if($5!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} ';'
+			| SWITCH '(' identifier ')' '{' switch_cases '}'
+			;
 
 for_initialization
 			: variable_dec
 			| expression ';'
 			| ';' ;
+for_updation
+			: for_updation ',' expression
+			| expression
+			;
+
+switch_cases 
+			: switch_cases CASE constant ':' statments
+			| switch_cases DEFAULT  ':' statments
+			| CASE constant ':' statments
+			;
+
 
 return_statement
 			: RETURN ';' {if(strcmp(currfunctype,"void")) {yyerror("ERROR: Cannot have void return for non-void function!\n"); exit(0);}}

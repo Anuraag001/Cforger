@@ -1,8 +1,9 @@
 #include<stdio.h>
+void main()
+{  int n;
+int m;
+	for(int i=0,j=0;i<n && j<m ;i++,j--){
 
-int main()
-{
-	int A[5] = {1,2,3,4,5};
-	char kajab[10] = "Hello";
-	
+	}
+
 }
