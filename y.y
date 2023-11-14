@@ -239,17 +239,11 @@ extended_conditional_statements
 			| ;
 
 iterative_statements
-<<<<<<< HEAD
 			: WHILE '(' simple_expression ')'{if($3!=1){yyerror("\033[31mERROR: Here, condition must have integer value!\033[0m\n");exit(0);}} statement
-			| FOR '(' for_initialization simple_expression ';' {if($4!=1){yyerror("\033[31mHere, condition must have integer value!\033[0m\n");exit(0);}} expression ')'
-			| DO statement WHILE '(' simple_expression ')' {if($5!=1){yyerror("\033[31mERROR: Here, condition must have integer value!\033[0m\n");exit(0);}} ';';
-=======
-			: WHILE '(' simple_expression ')'{if($3!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} statement
-			| FOR '(' for_initialization simple_expression ';' {if($4!=1){yyerror("Here, condition must have integer value!\n");exit(0);}} for_updation ')' 
-			| DO statement WHILE '(' simple_expression ')' {if($5!=1){yyerror("ERROR: Here, condition must have integer value!\n");exit(0);}} ';'
+			| FOR '(' for_initialization simple_expression ';' {if($4!=1){yyerror("\033[31mHere, condition must have integer value!\033[0m\n");exit(0);}} for_updation ')' 
+			| DO statement WHILE '(' simple_expression ')' {if($5!=1){yyerror("\033[31mERROR: Here, condition must have integer value!\033[0m\n");exit(0);}} ';'
 			| SWITCH '(' identifier ')' '{' switch_cases '}'
 			;
->>>>>>> ea10a131e991188324a17e62bddc2b2007b32bc4
 
 for_initialization
 			: variable_dec
